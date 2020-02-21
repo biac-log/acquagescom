@@ -7,7 +7,7 @@
     </v-app-bar>
 
     <v-content>
-      <EditionDevis />
+      <router-view></router-view>
     </v-content>
   </v-app>
 </template>

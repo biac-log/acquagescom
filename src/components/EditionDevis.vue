@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-footer>{{guid}}</v-footer>
+    <v-footer>DevisId : {{$route.params.guid}}</v-footer>
   </v-container>
 </template>
 

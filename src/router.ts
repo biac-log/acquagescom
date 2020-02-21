@@ -8,7 +8,7 @@ export default new Router({
     mode: "history",
     routes: [
         {
-            path: "/Devis",
+            path: "/Devis/:guid",
             name: "Edition devis",
             component: editionsDevis,
             props: true,
