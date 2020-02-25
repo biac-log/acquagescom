@@ -25,4 +25,7 @@ export const mutations: MutationTree<DocumentState> = {
     setErrorMessage(state, errorMessage: string) {
         state.errorMessage = errorMessage;
     },
+    setCustomers(state, list: Compte[]){
+        state.customers = list;
+    }
 };

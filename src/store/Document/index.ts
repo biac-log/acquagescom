@@ -12,6 +12,7 @@ export const state: DocumentState = {
   refDevis: '',
   numeroClient: '',
   errorMessage: '',
+  customers: [],
 };
 
 const namespaced = true;

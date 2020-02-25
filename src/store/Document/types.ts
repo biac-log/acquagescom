@@ -8,6 +8,7 @@ export interface DocumentState {
     refDevis: string;
     numeroClient: string;
     errorMessage: string;
+    customers:Compte[];
 }
 
 

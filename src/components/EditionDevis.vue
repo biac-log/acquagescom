@@ -1,7 +1,6 @@
 <template>
   <v-container>
     <ZoneEdition></ZoneEdition>
-        <v-btn >Sauvegarder</v-btn>
   </v-container>
 </template>
 

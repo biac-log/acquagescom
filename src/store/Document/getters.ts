@@ -1,6 +1,7 @@
 import { GetterTree } from 'vuex';
 import { DocumentState } from './types';
 import { RootState } from '../types';
+import { Compte } from '@/datas/Compte';
 
 export const getters: GetterTree<DocumentState, RootState> = {
     getIsNewDoc(state) {
@@ -23,4 +24,7 @@ export const getters: GetterTree<DocumentState, RootState> = {
     errorMessage(state): string {
         return state.errorMessage;
     },
+    getCustomers(state): Compte[]{
+        return state.customers;
+    }
 };

@@ -15,7 +15,7 @@
               label="Numéro client"
               v-model="numeroClient"
               :append-icon="'mdi-magnify'"
-              @click:append="doStuff()"
+              @click:append="searchClientDialog = true"
               :color="colorNumCli"
               :error-messages="customerNotFound"
               required
@@ -79,9 +79,31 @@
           </v-col>
         </v-row>
       </v-container>
-      <v-footer absolute>Guid du document : {{$route.params.guid}} - {{this.searchClientDialog}}</v-footer>
+      <v-footer absolute>Guid du document : {{$route.params.guid}}</v-footer>
     </v-form>
-
+    <v-layout justify-center>
+      <v-dialog
+        v-model="searchClientDialog"
+        eager
+        hide-overlay
+        max-width="800"
+        transition="dialog-bottom-transition"
+      >
+        <v-card>
+          <v-toolbar dark dense color="primary">
+            <v-btn icon dark @click="searchClientDialog = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-toolbar-title>Recherche clients</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn icon dark @click="refreshCustomersList()">
+              <v-icon>mdi-refresh</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <SearchCustomers @elementClick="editCustomerFromSearch" />
+        </v-card>
+      </v-dialog>
+    </v-layout>
   </v-container>
 </template>
 
@@ -94,8 +116,9 @@ import { Compte } from "@/datas/Compte";
 import { Email } from "../datas/Email";
 import axios from "axios";
 import { JsonConvert, ValueCheckingMode } from "json2typescript";
+import SearchCustomers from "@/components/SearchCustomers.vue";
 
-@Component({})
+@Component({ components: { SearchCustomers } })
 export default class ZoneEdition extends Vue {
   private searchClientDialog = false;
   private fromDateMenu = false;
@@ -119,23 +142,19 @@ export default class ZoneEdition extends Vue {
   private emailRules = [
     (e: any) => this.isEmailValid(e) || "L'adresse mail n'est pas valide"
   ];
-
   private dateRules = [
     (d: any) => !isNaN(Date.parse(d)) || "La date n'est pas valide"
   ];
-
-private cpRules = [
+  private cpRules = [
     (cp: any) => !isNaN(cp) || "Le code postal n'est pas valide"
   ];
-
-private triggerCheck() {
+  private triggerCheck() {
     if (this.numeroClient.length == 9) this.checkClient();
     else {
       this.colorNumCli = "primary";
       this.customerNotFound = "";
     }
   }
-
   private checkClient() {
     this.loading = true;
     axios
@@ -172,7 +191,6 @@ private triggerCheck() {
         this.loading = false;
       });
   }
-
   private getEmail() {
     axios
       .get<Email>(
@@ -191,7 +209,6 @@ private triggerCheck() {
         );
       });
   }
-
   private refreshClient(customer: Compte) {
     this.numeroClient = customer.numero.toString();
     this.libelleClient = customer.nom;
@@ -201,7 +218,6 @@ private triggerCheck() {
     this.codePostal = customer.codePostal;
     this.localite = customer.localite;
   }
-
   private clearClient() {
     this.dateCreation = "";
     this.libelleClient = "";
@@ -213,7 +229,6 @@ private triggerCheck() {
     this.localite = "";
     this.demandePar = "";
   }
-
   private isEmailValid(mail: string): boolean {
     if (mail == null || mail == "") return true;
     const regexp = new RegExp(
@@ -221,7 +236,6 @@ private triggerCheck() {
     );
     return regexp.test(mail);
   }
-
   private getModel(): Document {
     const doc = new Document();
 
@@ -237,6 +251,36 @@ private triggerCheck() {
     doc.demandePar = this.demandePar;
 
     return doc;
+  }
+
+  private editCustomerFromSearch(client: Compte) {
+    this.searchClientDialog = false;
+    this.refreshClient(client);
+    this.colorNumCli = "primary";
+    this.customerNotFound = "";
+  }
+
+  private refreshCustomersList() {
+    this.loading = true;
+    let clients: Compte[] | null = null;
+    axios;
+    axios
+      .post<Compte[]>(
+        `${process.env.VUE_APP_ApiAcQua}/Comptes/GetComptes?compteBloquer=false&typeAcces=PSQL_BTrieve`,
+        ["Client"]
+      )
+      .then(response => {
+        const jsonConvert: JsonConvert = new JsonConvert();
+        jsonConvert.valueCheckingMode = ValueCheckingMode.ALLOW_NULL;
+        clients = jsonConvert.deserializeArray(response.data, Compte);
+        this.$store.commit("documentModule/setCustomers", clients);
+      })
+      .catch(e => {
+        // commit('setErrorMessage', e.message + ' ' + process.env.VUE_APP_ApiAcQuaUrl);
+      })
+      .finally(() => {
+        this.loading = false;
+      });
   }
 }
 </script>
