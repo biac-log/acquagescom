@@ -2,7 +2,8 @@
   <v-app>
     <v-app-bar app color="#2979FF" dense dark>
       <v-spacer />
-      <v-toolbar-title>AcQuaGesCom - {{this.$route.name}}</v-toolbar-title>
+      <v-toolbar-title v-if="newDoc">AcQuaGesCom - Création {{this.$route.name}}</v-toolbar-title>
+      <v-toolbar-title v-else>AcQuaGesCom - Modification {{this.$route.name}} N° {{refDoc}}</v-toolbar-title>
       <v-spacer />
     </v-app-bar>
 
@@ -14,10 +15,17 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { Getter } from "vuex-class";
 import EditionDevis from "./components/EditionDevis.vue";
 
 @Component({
   components: { EditionDevis }
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+
+  @Getter("documentModule/getIsNewDoc")
+  private newDoc!: boolean;
+  @Getter("documentModule/getRefDoc")
+  private refDoc!: string;
+}
 </script>
