@@ -2,6 +2,7 @@ import { MutationTree } from 'vuex';
 import { DocumentState } from './types';
 import { Compte } from '@/datas/Compte';
 import { Document } from '@/datas/Document';
+import { Article } from '@/datas/Article';
 
 export const mutations: MutationTree<DocumentState> = {
     setIsNewDoc: (state, isNew: boolean) => {
@@ -25,7 +26,13 @@ export const mutations: MutationTree<DocumentState> = {
     setErrorMessage(state, errorMessage: string) {
         state.errorMessage = errorMessage;
     },
-    setCustomers(state, list: Compte[]){
+    setCustomers(state, list: Compte[]) {
         state.customers = list;
+    },
+    setArticles(state, list: Article[]) {
+        state.articles = list;
+    },
+    addArticle(state, article: Article) {
+        state.articles.push(article);
     }
 };

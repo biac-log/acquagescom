@@ -2,6 +2,7 @@ import { GetterTree } from 'vuex';
 import { DocumentState } from './types';
 import { RootState } from '../types';
 import { Compte } from '@/datas/Compte';
+import { Article } from '@/datas/Article';
 
 export const getters: GetterTree<DocumentState, RootState> = {
     getIsNewDoc(state) {
@@ -26,5 +27,8 @@ export const getters: GetterTree<DocumentState, RootState> = {
     },
     getCustomers(state): Compte[]{
         return state.customers;
+    },
+    getArticles(state): Article[]{
+        return state.articles;
     }
 };
