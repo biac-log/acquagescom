@@ -5,29 +5,83 @@ import { RootState } from '../types';
 import { Compte } from '@/datas/Compte';
 import { JsonConvert, ValueCheckingMode } from 'json2typescript';
 import { Article } from '@/datas/Article';
+import { Email } from '@/datas/Email';
 
 
 export const actions: ActionTree<DocumentState, RootState> = {
-  searchCustomer({ commit, rootState, rootGetters }) {
-    const numero = `${rootGetters['documentModule/getNumeroClient']}`;
-    axios.get<Compte>(`${process.env.VUE_APP_ApiAcQua}/Comptes/GetCompteById?typeCompte=Client&numeroCompte=${numero}&typeAcces=PSQL_BTrieve`)
-      .then((response) => {
+  searchCustomer({ commit, rootState, rootGetters }, numeroClient) {
+    commit('setLoading', true);
+    axios
+      .get<Compte>(
+        `${process.env.VUE_APP_ApiAcQua}/Comptes/GetCompteById?typeCompte=Client&numeroCompte=${numeroClient}&typeAcces=PSQL_BTrieve`
+      )
+      .then(response => {
         if (response.data) {
-
           const jsonConvert: JsonConvert = new JsonConvert();
           jsonConvert.valueCheckingMode = ValueCheckingMode.ALLOW_NULL;
-          const compte = jsonConvert.deserialize<Compte>(response.data, Compte);
-          commit('setClient', compte);
-          commit('articles/setErrorMessage', "");
+          const compte = jsonConvert.deserializeObject<Compte>(
+            response.data,
+            Compte
+          );
+          commit("setClient", compte);
+          commit("setMessageClientNotFound", "")
+        } else {
+          commit("clearClient");
+          commit("clearEmail");
+          commit("setMessageClientNotFound", "Ce client n'existe pas");
         }
-        else
-          commit('clearClient');
       })
-      .catch((e) => {
-        commit('articles/setErrorMessage', e.message + ' ' + process.env.VUE_APP_ApiAcQuaUrl, { root: true });
+      .catch(e => {
+        commit(
+          `setErrorMessage`,
+          `${e.message} ${process.env.VUE_APP_ApiAcQuaUrl}`
+        );
+      })
+      .finally(() => {
+        commit('setLoading', false);
       });
   },
-  addArticle(context, article: Article){
+  getEmail({ commit, rootState, rootGetters }, numeroClient){
+    axios
+      .get<Email>(
+        `${process.env.VUE_APP_ApiAcQua}/Email/GetEmailByCompte?typeCompte=Client&numeroCompte=${numeroClient}&isLocked=false`
+      )
+      .then(response => {
+        if (response.data) {
+          if (response.data.AdressesEmail)
+            commit('setEmail', response.data.AdressesEmail);
+        }
+      })
+      .catch(e => {
+        commit(
+          `documentModule/setErrorMessage`,
+          `${e.message} ${process.env.VUE_APP_ApiAcQuaUrl}`
+        );
+      });
+  },
+  addArticle(context, article: Article) {
     context.commit('addArticle', article);
+    context.commit('saveArticles', context.state.articles);
+  },
+  loadArticles(context) {
+    context.commit('loadArticles');
+  },
+  saveArticles(context, articles: Article[]) {
+    context.commit('saveArticles', articles);
+  },
+  saveCustomers(context, clients: Compte[]) {
+    context.commit('saveCustomers', clients);
+  },
+  loadCustomers(context) {
+    context.commit('loadCustomers');
+  },
+  loadClient(context){
+    context.commit('loadClient');
+  },
+  reloadAllDatas(context){
+    context.commit('loadClient');
+    context.commit('loadCustomers');
+    context.commit('loadArticles');
+    context.commit('loadEmail');
   }
 };

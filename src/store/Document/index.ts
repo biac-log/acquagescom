@@ -8,12 +8,12 @@ import { RootState } from '../types';
 export const state: DocumentState = {
   document: undefined,
   client: undefined,
-  isNewDoc: false,
-  refDevis: '',
-  numeroClient: '',
   errorMessage: '',
   customers: [],
   articles: [],
+  loading: false,
+  email:'',
+  messageClientNotFound: '',
 };
 
 const namespaced = true;

@@ -62,7 +62,6 @@ const MODULE_NAME = "documentModule";
 
 @Component({})
 export default class ZoneEdition extends Vue {
-  //   private addArticleDialog = false;
 
   @Getter(`${MODULE_NAME}/getArticles`)
   private articles!: Article[];
@@ -99,12 +98,14 @@ export default class ZoneEdition extends Vue {
     this.editedIndex = this.articles.indexOf(item);
     this.editedItem = Object.assign({}, item);
     this.dialog = true;
+    this.$store.dispatch(`${MODULE_NAME}/saveArticles`, this.articles);
   }
 
   deleteItem(item: Article) {
     const index = this.articles.indexOf(item);
     confirm("Êtes-vous sûr de vouloir supprimer cet article ?") &&
       this.articles.splice(index, 1);
+      this.$store.dispatch(`${MODULE_NAME}/saveArticles`, this.articles);
   }
 
   close() {
@@ -127,6 +128,7 @@ export default class ZoneEdition extends Vue {
       this.editedIndex = -1;
       (this.$refs.quantiteField as HTMLInputElement).focus();
     }
+    this.$store.dispatch(`${MODULE_NAME}/saveArticles`, this.articles);
   }
 }
 </script>

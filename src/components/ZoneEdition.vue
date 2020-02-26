@@ -10,7 +10,7 @@
     <v-container class="mt-n5" fluid>
       <v-row dense>
         <v-col cols="12" lg="3">
-          <v-card>
+          <v-card dense>
             <v-card-title :class="colorDateOk">
               <v-row>
                 <span class="ml-2 mt-2">Date de création</span>
@@ -20,24 +20,24 @@
                   :nudge-right="40"
                   transition="scale-transition"
                   offset-y
-                  max-width="290px"
-                  min-width="290px"
                 >
                   <template v-slot:activator="{ on }">
                     <v-text-field
-                      class="ml-2 mb-n5 float-right"
+                      class="ml-2 mb-n5 mr-3 float-right"
+                      v-model="dateCreation"
                       label="Date"
-                      placeholder="MM/JJ/AAAA"
+                      placeholder="jj/mm/aaaa"
                       append-icon="mdi-calendar"
-                      :value="dateCreation"
                       v-on="on"
                       :rules="dateRules"
                       solo
+                      counter="10"
+                      maxlength="10"
                     ></v-text-field>
                   </template>
                   <v-date-picker
-                    locale="fr-FR"
-                    v-model="dateCreation"
+                    locale="fr-fr"
+                    v-model="dateFromDatePicker"
                     no-title
                     @input="fromDateMenu = false"
                   ></v-date-picker>
@@ -45,12 +45,22 @@
               </v-row>
             </v-card-title>
             <v-container>
-              <v-row>
+              <v-row dense>
                 <v-col cols="12" lg="12">
-                  <v-text-field class="mt-n3 mb-n5" label="Devis créé par" placeholder="Nom employé" v-model="creePar"></v-text-field>
+                  <v-text-field
+                    class="mt-n2 mb-n4"
+                    label="Devis créé par"
+                    placeholder="Nom employé"
+                    v-model="creePar"
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" lg="12">
-                  <v-text-field class="mt-n3 mb-n5" label="Devis demandé par" placeholder="Si demandeur différent du client" v-model="demandePar"></v-text-field>
+                  <v-text-field
+                    class="mt-n2 mb-n4"
+                    label="Devis demandé par"
+                    placeholder="Si demandeur différent du client"
+                    v-model="demandePar"
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-container>
@@ -58,8 +68,8 @@
         </v-col>
         <v-spacer></v-spacer>
 
-        <v-col cols="12" lg="6">
-          <v-card>
+        <v-col cols="12" lg="5">
+          <v-card dense>
             <v-card-title :class="colorCustomerFound">
               <span class="mb-3">Client N°</span>
               <v-text-field
@@ -79,13 +89,13 @@
               ></v-text-field>
             </v-card-title>
             <v-container>
-              <v-row>
+              <v-row dense>
                 <v-col cols="12" lg="6">
                   <v-text-field
                     class="mt-n3"
                     label="Libellé client"
                     placeholder="Libellé client"
-                    v-model="libelleClient"
+                    :value="libelleClient"
                     required
                   ></v-text-field>
                 </v-col>
@@ -94,7 +104,7 @@
                     class="mt-n3"
                     label="Adresse client"
                     placeholder="Rue, numéro"
-                    v-model="adrLigne1"
+                    :value="adrLigne1"
                     required
                   ></v-text-field>
                 </v-col>
@@ -103,29 +113,34 @@
                     class="mt-n5"
                     label="Téléphone"
                     placeholder="Téléphone"
-                    v-model="telephone"
+                    :value="telephone"
                     required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6">
-                  <v-text-field class="mt-n5" label="Complément adresse" placeholder="Complément adresse" v-model="adrLigne2"></v-text-field>
+                  <v-text-field
+                    class="mt-n5"
+                    label="Complément adresse"
+                    placeholder="Complément adresse"
+                    :value="adrLigne2"
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6">
                   <v-text-field
-                    class="mt-n5 mb-n5"
+                    class="mt-n5"
                     :rules="emailRules"
                     label="E-mail"
                     placeholder="E-mail"
-                    v-model="email"
+                    :value="email"
                     required
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" lg="6">
                   <v-text-field
-                    class="mt-n5 mb-n5"
+                    class="mt-n5"
                     label="Code postal et localité"
                     placeholder="Ex: LU-1234 Luxembourg"
-                    v-model="cpLocalite"
+                    :value="cpLocalite"
                     required
                   ></v-text-field>
                 </v-col>
@@ -163,8 +178,7 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable */
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { Document } from "../datas/Document";
 import { Getter } from "vuex-class";
 import { Compte } from "@/datas/Compte";
@@ -172,31 +186,94 @@ import { Email } from "../datas/Email";
 import axios from "axios";
 import { JsonConvert, ValueCheckingMode } from "json2typescript";
 import SearchCustomers from "@/components/SearchCustomers.vue";
+import { getters } from "../store/Document/getters";
 const COLOR_OK = "green lighten-3";
 const COLOR_NOT_OK = "orange lighten-3";
 
 @Component({ components: { SearchCustomers } })
 export default class ZoneEdition extends Vue {
+  @Getter("documentModule/getLibelle")
+  private libelleClient!: string;
+  @Getter("documentModule/getTelephone")
+  private telephone!: string;
+  @Getter("documentModule/getAdrLigne1")
+  private adrLigne1!: string;
+  @Getter("documentModule/getAdrLigne2")
+  private adrLigne2!: string;
+  @Getter("documentModule/getLocalite")
+  private cpLocalite!: string;
+  @Getter("documentModule/getClient")
+  private client!: Compte;
+  @Getter("documentModule/getEmail")
+  private email!: string;
+  @Getter("documentModule/getClientNotFound")
+  private customerNotFound!: string;
+
+  @Getter("documentModule/errorMessage")
+  private errorMessage!: string;
+  @Getter("documentModule/loading")
+  private loading!: boolean;
+
+  private numeroClient = this.getNumCli();
   private searchClientDialog = false;
   private fromDateMenu = false;
-  private dateCreation = "";
-  private libelleClient = "";
-  private numeroClient = "";
-  private telephone = "";
-  private email = "";
-  private adrLigne1 = "";
-  private adrLigne2 = "";
-  private cpLocalite = "";
+  private dateCreation = this.formatDate(
+    new Date().toISOString().substr(0, 10)
+  );
+  private dateFromDatePicker = new Date().toISOString().substr(0, 10);
   private demandePar = "";
   private creePar = "";
   private colorNumCli = "primary";
   private colorCustomerFound = COLOR_NOT_OK;
   private colorDateOk = COLOR_NOT_OK;
-  private customerNotFound = "";
-  private loading = false;
 
-  @Getter("documentModule/errorMessage")
-  private errorMessage!: string;
+  public mounted() {
+    if (this.client) this.colorCustomerFound = COLOR_OK;
+    else this.colorCustomerFound = COLOR_NOT_OK;
+  }
+
+  @Watch("dateFromDatePicker")
+  private ondateFromDatePickerChanged(newValue: Compte, oldValue: Compte) {
+    this.dateCreation = this.formatDate(this.dateFromDatePicker);
+  }
+
+  //Doit recevoir une date au format JJ/MM/AAAA après année 2000
+  private verifyDate(date: string): boolean {
+    if (!date) return false;
+
+    const [dayStr, monthStr, yearStr] = date.split("/");
+    const day = +dayStr;
+    const month = +monthStr;
+    const year = +yearStr;
+    if (day <= 0 || month <= 0 || month > 12 || year < 2000) return false;
+
+    const isBisextile = year % 100 === 0 ? year % 400 === 0 : year % 4 === 0;
+
+    if (month == 2 && isBisextile && day > 29) return false;
+    if (month == 2 && !isBisextile && day > 28) return false;
+
+    if (
+      (month == 1 ||
+        month == 3 ||
+        month == 5 ||
+        month == 7 ||
+        month == 8 ||
+        month == 10 ||
+        month == 12) &&
+      day > 31
+    )
+      return false;
+    if (day > 30) return false;
+
+    return true;
+  }
+
+  private formatDate(date: string) {
+    if (!date) return null;
+
+    const [year, month, day] = date.split("-");
+    return `${day}/${month}/${year}`;
+  }
 
   private emailRules = [
     (e: any) => this.isEmailValid(e) || "L'adresse mail n'est pas valide"
@@ -206,8 +283,8 @@ export default class ZoneEdition extends Vue {
   ];
 
   private isDateValid(date: string): boolean {
-    if (date != "") {
-      if (!isNaN(Date.parse(date))) {
+    if (date != "" && date.length == 10) {
+      if (this.verifyDate(date)) {
         this.colorDateOk = COLOR_OK;
         return true;
       } else {
@@ -219,89 +296,33 @@ export default class ZoneEdition extends Vue {
       return true;
     }
   }
+  private getNumCli(): string {
+    return this.$store.getters["documentModule/getNumeroClient"];
+  }
 
   private triggerCheck() {
-    if (this.numeroClient.length == 9) this.checkClient();
+    if (this.numeroClient.length == 9) this.searchClient();
     else {
       this.colorNumCli = "primary";
-      this.customerNotFound = "";
+      this.$store.commit("documentModule/setMessageClientNotFound", "");
     }
   }
-  private checkClient() {
-    this.loading = true;
-    axios
-      .get<Compte>(
-        `${process.env.VUE_APP_ApiAcQua}/Comptes/GetCompteById?typeCompte=Client&numeroCompte=${this.numeroClient}&typeAcces=PSQL_BTrieve`
-      )
-      .then(response => {
-        if (response.data) {
-          const jsonConvert: JsonConvert = new JsonConvert();
-          jsonConvert.valueCheckingMode = ValueCheckingMode.ALLOW_NULL;
-          const compte = jsonConvert.deserializeObject<Compte>(
-            response.data,
-            Compte
-          );
-          this.getEmail();
-          this.refreshClient(compte);
-          this.$store.commit("documentModule/setClient", compte);
-          this.colorNumCli = "primary";
-          this.customerNotFound = "";
-          this.colorCustomerFound = COLOR_OK;
-        } else {
-          this.$store.commit("documentModule/clearClient");
-          this.clearClient();
-          this.colorNumCli = "red";
-          this.customerNotFound = "Ce client n'existe pas";
-          this.colorCustomerFound = COLOR_NOT_OK;
-        }
-      })
-      .catch(e => {
-        this.$store.commit(
-          `documentModule/setErrorMessage`,
-          `${e.message} ${process.env.VUE_APP_ApiAcQuaUrl}`
-        );
-      })
-      .finally(() => {
-        this.loading = false;
-      });
+  private searchClient() {
+    this.$store.dispatch("documentModule/searchCustomer", this.numeroClient);
   }
-  private getEmail() {
-    axios
-      .get<Email>(
-        `${process.env.VUE_APP_ApiAcQua}/Email/GetEmailByCompte?typeCompte=Client&numeroCompte=${this.numeroClient}&isLocked=false`
-      )
-      .then(response => {
-        if (response.data) {
-          if (response.data.AdressesEmail)
-            this.email = response.data.AdressesEmail;
-        }
-      })
-      .catch(e => {
-        this.$store.commit(
-          `documentModule/setErrorMessage`,
-          `${e.message} ${process.env.VUE_APP_ApiAcQuaUrl}`
-        );
-      });
+
+  @Watch("client")
+  private onClientChanged(newValue: Compte, oldValue: Compte) {
+    if (newValue) {
+      this.$store.dispatch("documentModule/getEmail", this.numeroClient);
+      this.colorNumCli = "primary";
+      this.colorCustomerFound = COLOR_OK;
+    } else {
+      this.colorNumCli = "red";
+      this.colorCustomerFound = COLOR_NOT_OK;
+    }
   }
-  private refreshClient(customer: Compte) {
-    this.numeroClient = customer.numero.toString();
-    this.libelleClient = customer.nom;
-    this.telephone = customer.telephone;
-    this.adrLigne1 = customer.adrLigne1;
-    this.adrLigne2 = customer.adrLigne2;
-    this.cpLocalite = `${customer.codePays}-${customer.codePostal} ${customer.localite}`;
-  }
-  private clearClient() {
-    this.dateCreation = "";
-    this.libelleClient = "";
-    this.telephone = "";
-    this.email = "";
-    this.adrLigne1 = "";
-    this.adrLigne2 = "";
-    this.cpLocalite = "";
-    this.demandePar = "";
-    this.creePar = "";
-  }
+
   private isEmailValid(mail: string): boolean {
     if (mail == null || mail == "") return true;
     const regexp = new RegExp(
@@ -312,15 +333,12 @@ export default class ZoneEdition extends Vue {
 
   private editCustomerFromSearch(client: Compte) {
     this.searchClientDialog = false;
-    this.refreshClient(client);
     this.colorNumCli = "primary";
-    this.customerNotFound = "";
   }
 
   private refreshCustomersList() {
-    this.loading = true;
+    this.$store.commit("documentModule/setLoading", true);
     let clients: Compte[] | null = null;
-    axios;
     axios
       .post<Compte[]>(
         `${process.env.VUE_APP_ApiAcQua}/Comptes/GetComptes?compteBloquer=false&typeAcces=PSQL_BTrieve`,
@@ -330,13 +348,16 @@ export default class ZoneEdition extends Vue {
         const jsonConvert: JsonConvert = new JsonConvert();
         jsonConvert.valueCheckingMode = ValueCheckingMode.ALLOW_NULL;
         clients = jsonConvert.deserializeArray(response.data, Compte);
-        this.$store.commit("documentModule/setCustomers", clients);
+        this.$store.commit("documentModule/saveCustomers", clients);
       })
       .catch(e => {
-        // commit('setErrorMessage', e.message + ' ' + process.env.VUE_APP_ApiAcQuaUrl);
+        this.$store.commit(
+          "documentModule/setErrorMessage",
+          e.message + " " + process.env.VUE_APP_ApiAcQuaUrl
+        );
       })
       .finally(() => {
-        this.loading = false;
+        this.$store.commit("documentModule/setLoading", false);
       });
   }
 }

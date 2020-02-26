@@ -9,7 +9,6 @@ Vue.use(Router);
 const checkIfExist: NavigationGuard = (to, from, next) => {
     //si existe : remplir le state.document avec les données
     //sinon :
-    store.commit('documentModule/setIsNewDoc', true);
     next();
 }
 

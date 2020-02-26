@@ -2,8 +2,9 @@
   <v-app>
     <v-app-bar app color="#2979FF" dense dark>
       <v-spacer />
-      <v-toolbar-title v-if="newDoc">AcQuaGesCom - Création {{this.$route.name}}</v-toolbar-title>
-      <v-toolbar-title v-else>AcQuaGesCom - Modification {{this.$route.name}} N° {{refDoc}}</v-toolbar-title>
+      <!-- <v-toolbar-title v-if="newDoc">AcQuaGesCom - Création {{this.$route.name}}</v-toolbar-title>
+      <v-toolbar-title v-else>AcQuaGesCom - Modification {{this.$route.name}} N° {{refDoc}}</v-toolbar-title> -->
+      <v-toolbar-title>AcQuaGesCom - Création {{this.$route.name}}</v-toolbar-title>
       <v-spacer />
     </v-app-bar>
 
@@ -23,9 +24,13 @@ import EditionDevis from "./components/EditionDevis.vue";
 })
 export default class App extends Vue {
 
-  @Getter("documentModule/getIsNewDoc")
-  private newDoc!: boolean;
-  @Getter("documentModule/getRefDoc")
-  private refDoc!: string;
+  // @Getter("documentModule/getIsNewDoc")
+  // private newDoc!: boolean;
+  // @Getter("documentModule/getRefDoc")
+  // private refDoc!: string;
+
+  private created() {
+    this.$store.dispatch('documentModule/reloadAllDatas');
+  }
 }
 </script>

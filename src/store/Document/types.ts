@@ -3,14 +3,14 @@ import { Document } from "@/datas/Document";
 import { Article } from '@/datas/Article';
 
 export interface DocumentState {
-    isNewDoc: boolean;
+    loading: boolean;
     document?: Document;
     client?: Compte;
-    refDevis: string;
-    numeroClient: string;
     errorMessage: string;
-    customers:Compte[];
+    customers: Compte[];
     articles: Article[];
+    email: string;
+    messageClientNotFound: string;
 }
 
 

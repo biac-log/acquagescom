@@ -6,6 +6,7 @@
           v-model="search"
           append-icon="mdi-magnify"
           label="Search"
+          :loading="loading"
           single-line
           hide-details
           clearable
@@ -15,7 +16,6 @@
         :headers="headers"
         :items="customers"
         :items-per-page="10"
-        :loading="loading"
         :search="search"
         :mobile-breakpoint="300"
         :custom-filter="customFilter"
@@ -33,7 +33,12 @@
           <td>{{ props.item.codePostal }}</td>
         </template>
       </v-data-table>
-      <v-alert :value="errorMessage != ''" type="warning" border="left" dismissible>{{ errorMessage }}</v-alert>
+      <v-alert
+        :value="errorMessage != ''"
+        type="warning"
+        border="left"
+        dismissible
+      >{{ errorMessage }}</v-alert>
     </v-card>
   </v-container>
 </template>
@@ -46,12 +51,13 @@ import { Compte } from "@/datas/Compte";
 @Component({})
 export default class SearchCustomers extends Vue {
   private search = "";
-  private loading = false;
 
   @Getter("documentModule/errorMessage")
   private errorMessage!: string;
   @Getter("documentModule/getCustomers")
   private customers!: Compte[];
+  @Getter("documentModule/loading")
+  private loading!: boolean;
 
   private headers = [
     { text: "Numero", value: "numero" },
@@ -59,7 +65,6 @@ export default class SearchCustomers extends Vue {
     { text: "Tel.", value: "telephone" },
     { text: "Code postal", value: "codePostal" }
   ];
-
   //On passe dans le filtre pour chaques valeurs présente dans chaques row
   //on test en même temps le codeEAN non affiché
   public customFilter(value: string, search: string, item: Compte) {
