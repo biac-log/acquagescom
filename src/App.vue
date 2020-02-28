@@ -34,3 +34,21 @@ export default class App extends Vue {
   // }
 }
 </script>
+<style>
+.input-top-table {
+  height: 50px;
+  font-size: 12pt;
+  width: auto;
+}
+.width-table{
+  max-width: 1400px;
+}
+.min-height {
+  height: 50px;
+  margin-top: -8px;
+}
+.min-width{
+  min-width: 100px;
+  width: 100px;
+}
+</style>

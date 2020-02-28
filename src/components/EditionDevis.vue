@@ -1,6 +1,11 @@
 <template>
   <v-container>
-    <ZoneEdition :createur.sync="createBy" :createDate.sync="date" :askBy.sync="demandePar"></ZoneEdition>
+    <ZoneEdition
+      :createur.sync="createBy"
+      :createDate.sync="date"
+      :askBy.sync="demandePar"
+      :commentaire.sync="Commentaire"
+    ></ZoneEdition>
     <GrilleArticles
       :totalHtva.sync="prixTotalHtva"
       :totalTvac.sync="prixTotalTTC"
@@ -9,7 +14,12 @@
     ></GrilleArticles>
     <v-row>
       <v-spacer></v-spacer>
-      <v-btn color="green lighten-1" @click="save" class="mb-5 white--text" :disabled="isSaveActive()">Sauvegarder</v-btn>
+      <v-btn
+        color="green lighten-1"
+        @click="save"
+        class="mb-5 white--text"
+        :disabled="isSaveActive()"
+      >Sauvegarder</v-btn>
       <v-spacer></v-spacer>
     </v-row>
     <v-footer color="white" absolute class="overline">
@@ -37,6 +47,7 @@ export default class EditionDevis extends Vue {
   public createBy = "";
   public date = this.formatDate(new Date().toISOString().substr(0, 10));
   public demandePar = "";
+  public Commentaire = "";
   public prixTotalTTC = 0;
   public prixTotalHtva = 0;
   public totalTva = 0;
@@ -109,6 +120,7 @@ export default class EditionDevis extends Vue {
     devis.PrixTotalHtva = this.prixTotalHtva;
     devis.TotalTva = this.totalTva;
     devis.PrixTotalTtc = this.prixTotalTTC;
+    devis.Commentaire = this.Commentaire;
     devis.DemandePar = this.demandePar;
     devis.AcQuaDocsId = this.$route.params.guid;
 

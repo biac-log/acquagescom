@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="width-table mt-n3">
     <v-alert
       :value="errorMessage != ''"
       type="warning"
@@ -7,14 +7,14 @@
       class="mt-n2"
       dismissible
     >{{ errorMessage }}</v-alert>
-    <v-container class="mt-n5" fluid>
+    <v-container class="mt-n5 mb-n5" fluid>
       <v-row dense>
         <v-col cols="12" lg="5">
-          <v-card dense>
+          <v-card dense flat>
             <v-card-title :class="colorCustomerFound">
               <span class="mb-3">Client N°</span>
               <v-text-field
-                class="ml-2 mb-n5"
+                class="ml-2 mb-n5 min-width"
                 label="Numéro client"
                 placeholder="Numéro client"
                 v-model="numeroClient"
@@ -89,12 +89,14 @@
             </v-container>
           </v-card>
         </v-col>
+
         <v-spacer></v-spacer>
+
         <v-col cols="12" lg="5">
-          <v-card dense>
+          <v-card dense flat>
             <v-card-title :class="colorDateOk">
               <v-row>
-                <span class="ml-2 mt-2">Date de création</span>
+                <span class="ml-2 mt-2">Date</span>
                 <v-menu
                   v-model="fromDateMenu"
                   :close-on-content-click="false"
@@ -104,7 +106,7 @@
                 >
                   <template v-slot:activator="{ on }">
                     <v-text-field
-                      class="ml-2 mb-n5 mr-3 float-right"
+                      class="ml-2 mb-n5 mr-3 float-right min-width"
                       v-model="dateCreation"
                       label="Date"
                       placeholder="jj/mm/aaaa"
@@ -127,7 +129,7 @@
             </v-card-title>
             <v-container>
               <v-row dense>
-                <v-col cols="12" lg="12">
+                <v-col cols="12" lg="6">
                   <v-text-field
                     class="min-height"
                     label="Devis créé par"
@@ -135,13 +137,22 @@
                     v-model="creePar"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" lg="12">
+                <v-col cols="12" lg="6">
                   <v-text-field
                     class="min-height"
                     label="Devis demandé par"
                     placeholder="Si demandeur différent du client"
                     v-model="demandePar"
                   ></v-text-field>
+                </v-col>
+                <v-col cols="12" lg="12" class="mt-n3">
+                  <v-textarea
+                    rows="3"
+                    no-resize
+                    label="Commentaire"
+                    placeholder="Commentaire"
+                    v-model="Comment"
+                  ></v-textarea>
                 </v-col>
               </v-row>
             </v-container>
@@ -185,8 +196,8 @@ import axios from "axios";
 import { JsonConvert, ValueCheckingMode } from "json2typescript";
 import SearchCustomers from "@/components/SearchCustomers.vue";
 import { getters } from "../store/Document/getters";
-const COLOR_OK = "mb-n3 green lighten-1 white--text";
-const COLOR_NOT_OK = "mb-n3 orange lighten-3";
+const COLOR_OK = "green lighten-1 white--text";
+const COLOR_NOT_OK = "orange lighten-3";
 
 @Component({ components: { SearchCustomers } })
 export default class ZoneEdition extends Vue {
@@ -218,6 +229,8 @@ export default class ZoneEdition extends Vue {
   private dateCreation!: string;
   @PropSync("askBy")
   private demandePar!: string;
+  @PropSync("commentaire")
+  private Comment!: string;
 
   private numeroClient = this.getNumCli();
   private searchClientDialog = false;
@@ -365,8 +378,3 @@ export default class ZoneEdition extends Vue {
   }
 }
 </script>
-<style>
-.min-height {
-  height: 50px;
-}
-</style>
