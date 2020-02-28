@@ -9,7 +9,88 @@
     >{{ errorMessage }}</v-alert>
     <v-container class="mt-n5" fluid>
       <v-row dense>
-        <v-col cols="12" lg="3">
+        <v-col cols="12" lg="5">
+          <v-card dense>
+            <v-card-title :class="colorCustomerFound">
+              <span class="mb-3">Client N°</span>
+              <v-text-field
+                class="ml-2 mb-n5"
+                label="Numéro client"
+                placeholder="Numéro client"
+                v-model="numeroClient"
+                :append-icon="'mdi-magnify'"
+                @click:append="searchClientDialog = true"
+                :color="colorNumCli"
+                :error-messages="customerNotFound"
+                solo
+                counter="9"
+                maxlength="9"
+                @keyup="triggerCheck"
+                :loading="loading"
+              ></v-text-field>
+            </v-card-title>
+            <v-container>
+              <v-row dense>
+                <v-col cols="12" lg="6">
+                  <v-text-field
+                    class="min-height"
+                    label="Libellé client"
+                    placeholder="Libellé client"
+                    :value="libelleClient"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6">
+                  <v-text-field
+                    class="min-height"
+                    label="Adresse"
+                    placeholder="Rue, numéro"
+                    :value="adrLigne1"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6">
+                  <v-text-field
+                    class="min-height"
+                    label="Téléphone"
+                    placeholder="Téléphone"
+                    :value="telephone"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6">
+                  <v-text-field
+                    class="min-height"
+                    label="Complément adresse"
+                    placeholder="Complément adresse"
+                    :value="adrLigne2"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6">
+                  <v-text-field
+                    class="min-height"
+                    :rules="emailRules"
+                    label="E-mail"
+                    placeholder="E-mail"
+                    :value="email"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6">
+                  <v-text-field
+                    class="min-height"
+                    label="Code postal et localité"
+                    placeholder="Ex: LU-1234 Luxembourg"
+                    :value="cpLocalite"
+                    required
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card>
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col cols="12" lg="5">
           <v-card dense>
             <v-card-title :class="colorDateOk">
               <v-row>
@@ -48,7 +129,7 @@
               <v-row dense>
                 <v-col cols="12" lg="12">
                   <v-text-field
-                    class="mt-n2 mb-n4"
+                    class="min-height"
                     label="Devis créé par"
                     placeholder="Nom employé"
                     v-model="creePar"
@@ -56,92 +137,10 @@
                 </v-col>
                 <v-col cols="12" lg="12">
                   <v-text-field
-                    class="mt-n2 mb-n4"
+                    class="min-height"
                     label="Devis demandé par"
                     placeholder="Si demandeur différent du client"
                     v-model="demandePar"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card>
-        </v-col>
-        <v-spacer></v-spacer>
-
-        <v-col cols="12" lg="5">
-          <v-card dense>
-            <v-card-title :class="colorCustomerFound">
-              <span class="mb-3">Client N°</span>
-              <v-text-field
-                class="ml-2 mb-n5"
-                label="Numéro client"
-                placeholder="Numéro client"
-                v-model="numeroClient"
-                :append-icon="'mdi-magnify'"
-                @click:append="searchClientDialog = true"
-                :color="colorNumCli"
-                :error-messages="customerNotFound"
-                solo
-                counter="9"
-                maxlength="9"
-                @keyup="triggerCheck"
-                :loading="loading"
-              ></v-text-field>
-            </v-card-title>
-            <v-container>
-              <v-row dense>
-                <v-col cols="12" lg="6">
-                  <v-text-field
-                    class="mt-n3"
-                    label="Libellé client"
-                    placeholder="Libellé client"
-                    :value="libelleClient"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" lg="6">
-                  <v-text-field
-                    class="mt-n3"
-                    label="Adresse client"
-                    placeholder="Rue, numéro"
-                    :value="adrLigne1"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" lg="6">
-                  <v-text-field
-                    class="mt-n5"
-                    label="Téléphone"
-                    placeholder="Téléphone"
-                    :value="telephone"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" lg="6">
-                  <v-text-field
-                    class="mt-n5"
-                    label="Complément adresse"
-                    placeholder="Complément adresse"
-                    :value="adrLigne2"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" lg="6">
-                  <v-text-field
-                    class="mt-n5"
-                    :rules="emailRules"
-                    label="E-mail"
-                    placeholder="E-mail"
-                    :value="email"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" lg="6">
-                  <v-text-field
-                    class="mt-n5"
-                    label="Code postal et localité"
-                    placeholder="Ex: LU-1234 Luxembourg"
-                    :value="cpLocalite"
-                    required
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -178,8 +177,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import { Document } from "../datas/Document";
+import { Component, Vue, Prop, Watch, PropSync } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 import { Compte } from "@/datas/Compte";
 import { Email } from "../datas/Email";
@@ -187,8 +185,8 @@ import axios from "axios";
 import { JsonConvert, ValueCheckingMode } from "json2typescript";
 import SearchCustomers from "@/components/SearchCustomers.vue";
 import { getters } from "../store/Document/getters";
-const COLOR_OK = "green lighten-3";
-const COLOR_NOT_OK = "orange lighten-3";
+const COLOR_OK = "mb-n3 green lighten-1 white--text";
+const COLOR_NOT_OK = "mb-n3 orange lighten-3";
 
 @Component({ components: { SearchCustomers } })
 export default class ZoneEdition extends Vue {
@@ -214,15 +212,18 @@ export default class ZoneEdition extends Vue {
   @Getter("documentModule/loading")
   private loading!: boolean;
 
+  @PropSync("createur")
+  private creePar!: string;
+  @PropSync("createDate")
+  private dateCreation!: string;
+  @PropSync("askBy")
+  private demandePar!: string;
+
   private numeroClient = this.getNumCli();
   private searchClientDialog = false;
   private fromDateMenu = false;
-  private dateCreation = this.formatDate(
-    new Date().toISOString().substr(0, 10)
-  );
+
   private dateFromDatePicker = new Date().toISOString().substr(0, 10);
-  private demandePar = "";
-  private creePar = "";
   private colorNumCli = "primary";
   private colorCustomerFound = COLOR_NOT_OK;
   private colorDateOk = COLOR_NOT_OK;
@@ -234,7 +235,7 @@ export default class ZoneEdition extends Vue {
 
   @Watch("dateFromDatePicker")
   private ondateFromDatePickerChanged(newValue: Compte, oldValue: Compte) {
-    this.dateCreation = this.formatDate(this.dateFromDatePicker);
+    this.dateCreation = this.formatDate(this.dateFromDatePicker) || "";
   }
 
   //Doit recevoir une date au format JJ/MM/AAAA après année 2000
@@ -314,7 +315,8 @@ export default class ZoneEdition extends Vue {
   @Watch("client")
   private onClientChanged(newValue: Compte, oldValue: Compte) {
     if (newValue) {
-      this.$store.dispatch("documentModule/getEmail", this.numeroClient);
+      this.numeroClient = newValue.numero.toString();
+      this.$store.dispatch("documentModule/getEmail", newValue.numero);
       this.colorNumCli = "primary";
       this.colorCustomerFound = COLOR_OK;
     } else {
@@ -332,6 +334,7 @@ export default class ZoneEdition extends Vue {
   }
 
   private editCustomerFromSearch(client: Compte) {
+    this.$store.commit("documentModule/setClient", client);
     this.searchClientDialog = false;
     this.colorNumCli = "primary";
   }
@@ -362,3 +365,8 @@ export default class ZoneEdition extends Vue {
   }
 }
 </script>
+<style>
+.min-height {
+  height: 50px;
+}
+</style>

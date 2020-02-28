@@ -4,7 +4,7 @@ import { DocumentState } from './types';
 import { RootState } from '../types';
 import { Compte } from '@/datas/Compte';
 import { JsonConvert, ValueCheckingMode } from 'json2typescript';
-import { Article } from '@/datas/Article';
+import { DocumentDetail } from '@/datas/DocumentDetail';
 import { Email } from '@/datas/Email';
 
 
@@ -42,6 +42,7 @@ export const actions: ActionTree<DocumentState, RootState> = {
       });
   },
   getEmail({ commit, rootState, rootGetters }, numeroClient){
+    commit('clearEmail');
     axios
       .get<Email>(
         `${process.env.VUE_APP_ApiAcQua}/Email/GetEmailByCompte?typeCompte=Client&numeroCompte=${numeroClient}&isLocked=false`
@@ -59,14 +60,14 @@ export const actions: ActionTree<DocumentState, RootState> = {
         );
       });
   },
-  addArticle(context, article: Article) {
+  addArticle(context, article: DocumentDetail) {
     context.commit('addArticle', article);
     context.commit('saveArticles', context.state.articles);
   },
   loadArticles(context) {
     context.commit('loadArticles');
   },
-  saveArticles(context, articles: Article[]) {
+  saveArticles(context, articles: DocumentDetail[]) {
     context.commit('saveArticles', articles);
   },
   saveCustomers(context, clients: Compte[]) {

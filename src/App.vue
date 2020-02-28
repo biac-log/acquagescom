@@ -29,8 +29,8 @@ export default class App extends Vue {
   // @Getter("documentModule/getRefDoc")
   // private refDoc!: string;
 
-  private created() {
-    this.$store.dispatch('documentModule/reloadAllDatas');
-  }
+  // private created() {
+  //   this.$store.dispatch('documentModule/reloadAllDatas');
+  // }
 }
 </script>

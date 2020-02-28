@@ -1,0 +1,31 @@
+{
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true,
+        "commonjs": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:vue/essential",
+        "plugin:@typescript-eslint/eslint-recommended"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly",
+        "process": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "parser": "@typescript-eslint/parser"
+    },
+    "plugins": [
+        "vue",
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "consistent-this": [2, "that"],
+        "no-mixed-spaces-and-tabs": 0,
+        "no-unused-vars": "off"
+    }
+}
