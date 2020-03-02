@@ -138,11 +138,13 @@ export default class EditionDevis extends Vue {
   private sendDevis(devis: Devis) {
     axios
       .post(`${process.env.VUE_APP_ApiGesCom}/Devis`, devis)
-      .then(() => {})
+      .then(() => {
+        this.$store.commit('documentModule/setSuccessMessage', "Le devis a été sauvegardé avec succès, vous pouvez fermer la fenêtre.");
+      })
       .catch(e => {
         this.$store.commit(
           `documentModule/setErrorMessage`,
-          `${e.message} ${process.env.VUE_APP_ApiAcQuaUrl}`
+          `${e.message} ${process.env.VUE_APP_ApiGesCom}`
         );
       });
   }

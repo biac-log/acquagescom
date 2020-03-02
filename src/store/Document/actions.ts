@@ -34,7 +34,7 @@ export const actions: ActionTree<DocumentState, RootState> = {
       .catch(e => {
         commit(
           `setErrorMessage`,
-          `${e.message} ${process.env.VUE_APP_ApiAcQuaUrl}`
+          `${e.message} ${process.env.VUE_APP_ApiAcQua}`
         );
       })
       .finally(() => {
@@ -56,7 +56,7 @@ export const actions: ActionTree<DocumentState, RootState> = {
       .catch(e => {
         commit(
           `documentModule/setErrorMessage`,
-          `${e.message} ${process.env.VUE_APP_ApiAcQuaUrl}`
+          `${e.message} ${process.env.VUE_APP_ApiAcQua}`
         );
       });
   },
@@ -84,5 +84,11 @@ export const actions: ActionTree<DocumentState, RootState> = {
     context.commit('loadCustomers');
     context.commit('loadArticles');
     context.commit('loadEmail');
+  },
+  displaySuccessMessage(context, value: boolean) {
+    context.commit('displaySuccessMessage', value);
+  },
+  displayErrorMessage(context, value: boolean) {
+    context.commit('displayErrorMessage', value);
   }
 };

@@ -7,10 +7,14 @@ export interface DocumentState {
     document?: Devis;
     client?: Compte;
     errorMessage: string;
+    displayErrorMessage: boolean;
     customers: Compte[];
     articles: DocumentDetail[];
     email: string;
     messageClientNotFound: string;
+    displaySuccessMessage: boolean;
+    successMessage: string;
+
 }
 
 

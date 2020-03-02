@@ -8,6 +8,10 @@
       :footer-props="{ 'items-per-page-options': [10, 25, 50],
                       	 'items-per-page-text': 'Articles par page'}"
     >
+      <template v-slot:item.upDown="{ item }">
+        <v-icon :disabled="isFirstItem(item)" @click.stop="moveUp(item)">mdi-chevron-up</v-icon>
+        <v-icon :disabled="isLastItem(item)" @click.stop="moveDown(item)">mdi-chevron-down</v-icon>
+      </template>
       <template v-slot:item.prixUnitaire="{ item }">
         <span>{{item.prixUnitaire.toLocaleString("fr-FR", { maximumFractionDigits: 2, minimumFractionDigits: 2 })}} €</span>
       </template>
@@ -16,7 +20,7 @@
       </template>
       <template v-slot:top>
         <v-toolbar flat color="white">
-          <v-dialog v-model="dialog" max-width="800px">
+          <v-dialog v-model="dialog" max-width="800px" min-width="400px" @keydown.esc="close">
             <template v-slot:activator="{ on }">
               <v-btn color="primary" dark class="mb-2 ml-n4" v-on="on">Nouvel article</v-btn>
             </template>
@@ -30,12 +34,10 @@
                   <v-row>
                     <v-col cols="12" sm="6" md="2">
                       <v-text-field
-                        v-on:focus="$event.target.select()"
                         ref="quantiteField"
                         v-model.number="editedItem.quantite"
                         label="Quantite"
                         autofocus
-                        @focus="$event.target.select()"
                         type="number"
                       ></v-text-field>
                     </v-col>
@@ -112,9 +114,16 @@ export default class ZoneEdition extends Vue {
 
   private headers = [
     {
+      text: "",
+      value: "upDown",
+      sortable: false,
+      width: 10,
+      align: "left"
+    },
+    {
       text: "Quantité",
       value: "quantite",
-      width: 50,
+      width: 40,
       sortable: false,
       align: "right"
     },
@@ -171,9 +180,11 @@ export default class ZoneEdition extends Vue {
   //   const that = this;
   //   Sortable.create(table as HTMLElement, {
   //     onEnd({ newIndex, oldIndex }) {
-  //       const rowSelected = that.articles.splice(oldIndex || -1, 1)[0];
-  //       that.articles.splice(newIndex || -1, 0, rowSelected);
-  //       that.$store.dispatch(`${MODULE_NAME}/saveArticles`, that.articles);
+  //       const realOldIndex = oldIndex != undefined? oldIndex : -1;
+  //       const realNewIndex = newIndex != undefined? newIndex : -1;
+  //       const rowSelected = that.articles.splice(realOldIndex, 1)[0];
+  //       that.articles.splice(realNewIndex, 0, rowSelected);
+  //       that.$store.commit(`${MODULE_NAME}/saveArticles`, that.articles);
   //     }
   //   });
   // }
@@ -220,6 +231,37 @@ export default class ZoneEdition extends Vue {
     }
     this.$store.dispatch(`${MODULE_NAME}/saveArticles`, this.articles);
     this.$emit("calculPrix");
+  }
+
+  private isFirstItem(ligneArticle: DocumentDetail): boolean {
+    return this.articles.findIndex(a => a.libelle == ligneArticle.libelle) == 0;
+  }
+
+  private isLastItem(ligneArticle: DocumentDetail): boolean {
+    return (
+      this.articles.findIndex(a => a.libelle == ligneArticle.libelle) ==
+      this.articles.length - 1
+    );
+  }
+
+  private moveUp(ligneArticle: DocumentDetail) {
+    const oldIndex = this.articles.findIndex(
+      a => a.libelle == ligneArticle.libelle
+    );
+    if (oldIndex <= 0) return;
+    const newIndex = oldIndex - 1;
+    const rowSelected = this.articles.splice(oldIndex, 1)[0];
+    this.articles.splice(newIndex, 0, rowSelected);
+  }
+
+  private moveDown(ligneArticle: DocumentDetail) {
+    const oldIndex = this.articles.findIndex(
+      a => a.libelle == ligneArticle.libelle
+    );
+    if (oldIndex >= this.articles.length - 1) return;
+    const newIndex = oldIndex + 1;
+    const rowSelected = this.articles.splice(oldIndex, 1)[0];
+    this.articles.splice(newIndex, 0, rowSelected);
   }
 }
 </script>

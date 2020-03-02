@@ -33,12 +33,6 @@
           <td>{{ props.item.codePostal }}</td>
         </template>
       </v-data-table>
-      <v-alert
-        :value="errorMessage != ''"
-        type="warning"
-        border="left"
-        dismissible
-      >{{ errorMessage }}</v-alert>
     </v-card>
   </v-container>
 </template>
@@ -52,8 +46,6 @@ import { Compte } from "@/datas/Compte";
 export default class SearchCustomers extends Vue {
   private search = "";
 
-  @Getter("documentModule/errorMessage")
-  private errorMessage!: string;
   @Getter("documentModule/getCustomers")
   private customers!: Compte[];
   @Getter("documentModule/loading")

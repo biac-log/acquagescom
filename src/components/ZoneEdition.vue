@@ -1,12 +1,5 @@
 <template>
   <v-container class="width-table mt-n3">
-    <v-alert
-      :value="errorMessage != ''"
-      type="warning"
-      border="left"
-      class="mt-n2"
-      dismissible
-    >{{ errorMessage }}</v-alert>
     <v-container class="mt-n5 mb-n5" fluid>
       <v-row dense>
         <v-col cols="12" lg="5">
@@ -218,8 +211,6 @@ export default class ZoneEdition extends Vue {
   @Getter("documentModule/getClientNotFound")
   private customerNotFound!: string;
 
-  @Getter("documentModule/errorMessage")
-  private errorMessage!: string;
   @Getter("documentModule/loading")
   private loading!: boolean;
 
@@ -317,8 +308,17 @@ export default class ZoneEdition extends Vue {
   private triggerCheck() {
     if (this.numeroClient.length == 9) this.searchClient();
     else {
+      this.$store.commit("documentModule/clearClient");
+      this.$store.commit("documentModule/clearEmail");
       this.colorNumCli = "primary";
-      this.$store.commit("documentModule/setMessageClientNotFound", "");
+      const errorMessage =
+        this.numeroClient.length === 0
+          ? "Veuillez entrer un numéro de client"
+          : "Numéro de client invalide";
+      this.$store.commit(
+        "documentModule/setMessageClientNotFound",
+        errorMessage
+      );
     }
   }
   private searchClient() {

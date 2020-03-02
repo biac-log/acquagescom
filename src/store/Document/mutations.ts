@@ -5,7 +5,7 @@ import { Devis } from '@/datas/Devis';
 import { DocumentDetail } from '@/datas/DocumentDetail';
 
 export const mutations: MutationTree<DocumentState> = {
-    setLoading(state, isLoading: boolean){
+    setLoading(state, isLoading: boolean) {
         state.loading = isLoading;
     },
     setDocument: (state, doc: Devis) => {
@@ -22,9 +22,6 @@ export const mutations: MutationTree<DocumentState> = {
     clearClient: (state) => {
         state.client = undefined;
         // localStorage.removeItem('client');
-    },
-    setErrorMessage(state, errorMessage: string) {
-        state.errorMessage = errorMessage;
     },
     setArticles(state, list: DocumentDetail[]) {
         state.articles = list;
@@ -46,17 +43,31 @@ export const mutations: MutationTree<DocumentState> = {
     loadCustomers(state) {
         state.customers = JSON.parse(localStorage.getItem('clients') || "[]");
     },
-    loadClient(state){
+    loadClient(state) {
         state.client = JSON.parse(localStorage.getItem('client') || '');
     },
-    loadEmail(state){
+    loadEmail(state) {
         state.email = localStorage.getItem('email') || "";
     },
-    clearEmail(state){
+    clearEmail(state) {
         state.email = '';
         // localStorage.removeItem('email');
     },
-    setMessageClientNotFound(state, message: string){
+    setMessageClientNotFound(state, message: string) {
         state.messageClientNotFound = message;
-    }
+    },
+    setSuccessMessage(state, message: string) {
+        state.displaySuccessMessage = message !== '';
+        state.successMessage = message;
+    },
+    displaySuccessMessage(state, value: boolean) {
+        state.displaySuccessMessage = value;
+    },
+    setErrorMessage(state, message: string) {
+        state.displayErrorMessage = message !== '';
+        state.errorMessage = message;
+    },
+    displayErrorMessage(state, value: boolean) {
+        state.displayErrorMessage = value;
+    },
 };

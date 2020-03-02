@@ -52,5 +52,8 @@ export const getters: GetterTree<DocumentState, RootState> = {
     },
     getClientNotFound(state): string{
         return state.messageClientNotFound;
-    }
+    },
+    successMessage(state): string {
+        return state.successMessage;
+    },
 };
