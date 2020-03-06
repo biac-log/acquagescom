@@ -17,6 +17,8 @@ export const state: DocumentState = {
   messageClientNotFound: '',
   successMessage: '',
   displaySuccessMessage: false,
+  isNewDoc: true,
+  refDoc:''
 };
 
 const namespaced = true;

@@ -3,6 +3,7 @@ import { DocumentState } from './types';
 import { Compte } from '@/datas/Compte';
 import { Devis } from '@/datas/Devis';
 import { DocumentDetail } from '@/datas/DocumentDetail';
+import { state } from '.';
 
 export const mutations: MutationTree<DocumentState> = {
     setLoading(state, isLoading: boolean) {
@@ -70,4 +71,10 @@ export const mutations: MutationTree<DocumentState> = {
     displayErrorMessage(state, value: boolean) {
         state.displayErrorMessage = value;
     },
+    setIsNewDoc(state, value: boolean){
+        state.isNewDoc = value;
+    },
+    setRefDoc(satte, value: string){
+        state.refDoc = value;
+    }
 };

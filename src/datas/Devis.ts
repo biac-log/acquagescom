@@ -4,41 +4,41 @@ import { DocumentDetail } from './DocumentDetail';
 @JsonObject('Devis')
 export class Devis {
   @JsonProperty('NumeroDevis ', String)
-  public NumeroDevis  = '';
+  public numeroDevis  = '';
   @JsonProperty('Date', Date)
-  public Date = new Date();
+  public date = new Date();
   @JsonProperty('Createur ', String)
-  public Createur = '';
+  public createur = '';
   @JsonProperty('NumeroClient', Number)
-  public NumeroClient = 0;
+  public numeroClient = 0;
   @JsonProperty('LibelleClient', String)
-  public LibelleClient = '';
+  public libelleClient = '';
   @JsonProperty('AdresseLigne1', String)
-  public AdresseLigne1 = '';
+  public adresseLigne1 = '';
   @JsonProperty('AdresseLigne2', String)
-  public AdresseLigne2 = '';
+  public adresseLigne2 = '';
   @JsonProperty('CodePays', String)
-  public CodePays = '';
+  public codePays = '';
   @JsonProperty('CodePostal', String)
-  public CodePostal = '';
+  public codePostal = '';
   @JsonProperty('Localite', String)
-  public Localite = '';
+  public localite = '';
   @JsonProperty('Telephone', String)
-  public Telephone = '';
+  public telephone = '';
   @JsonProperty('Email', String)
-  public Email = '';
+  public email = '';
   @JsonProperty('Articles', [DocumentDetail])
-  public Articles : DocumentDetail[] = [];
+  public articles : DocumentDetail[] = [];
   @JsonProperty('PrixTotalHtva', Number)
-  public PrixTotalHtva = 0;
+  public prixTotalHtva = 0;
   @JsonProperty('TotalTva', Number)
-  public TotalTva = 0;
+  public totalTva = 0;
   @JsonProperty('PrixTotalTtc', Number)
-  public PrixTotalTtc = 0;
+  public prixTotalTtc = 0;
   @JsonProperty('Commentaire', String)
-  public Commentaire = "";
+  public commentaire = "";
   @JsonProperty('DemandePar', String)
-  public DemandePar = '';
+  public demandePar = '';
   @JsonProperty('AcQuaDocsId ', String)
-  public AcQuaDocsId = '';
+  public acQuaDocsId = '';
 }

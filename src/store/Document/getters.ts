@@ -9,9 +9,7 @@ export const getters: GetterTree<DocumentState, RootState> = {
         return state.loading;
     },
     getDocument(state) {
-        if (state.document)
-            return state.document;
-        return new Document();
+        return state.document;
     },
     getNumeroClient(state) {
         return state.client?.numero || "";
@@ -22,38 +20,44 @@ export const getters: GetterTree<DocumentState, RootState> = {
     errorMessage(state): string {
         return state.errorMessage;
     },
-    getCustomers(state): Compte[]{
+    getCustomers(state): Compte[] {
         return state.customers;
     },
-    getArticles(state): DocumentDetail[]{
+    getArticles(state): DocumentDetail[] {
         return state.articles;
     },
-    getLibelle(state): string{
+    getLibelle(state): string {
         return state.client?.nom || "";
     },
-    getTelephone(state): string{
+    getTelephone(state): string {
         return state.client?.telephone || "";
     },
-    getAdrLigne1(state): string{
+    getAdrLigne1(state): string {
         return state.client?.adrLigne1 || "";
     },
-    getAdrLigne2(state): string{
+    getAdrLigne2(state): string {
         return state.client?.adrLigne2 || "";
     },
-    getLocalite(state): string{
+    getLocalite(state): string {
         let result = "";
-        if(state.client?.codePays) result += `${state.client?.codePays}-`;
-        if(state.client?.codePostal) result += `${state.client?.codePostal} `;
-        if(state.client?.localite) result += `${state.client?.localite}`;
+        if (state.client?.codePays) result += `${state.client?.codePays}-`;
+        if (state.client?.codePostal) result += `${state.client?.codePostal} `;
+        if (state.client?.localite) result += `${state.client?.localite}`;
         return result;
     },
-    getEmail(state): string{
+    getEmail(state): string {
         return state.email;
     },
-    getClientNotFound(state): string{
+    getClientNotFound(state): string {
         return state.messageClientNotFound;
     },
     successMessage(state): string {
         return state.successMessage;
     },
+    getIsNewDoc(state):boolean{
+        return state.isNewDoc;
+    },
+    getRefDoc(state) : string{
+        return state.refDoc;
+    }
 };

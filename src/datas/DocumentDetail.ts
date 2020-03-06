@@ -4,8 +4,8 @@ import { JsonObject, JsonProperty } from 'json2typescript';
 export class DocumentDetail {
   @JsonProperty('Quantite', Number)
   public quantite = 0;
-  @JsonProperty('Libelle', String)
-  public libelle = '';
+  @JsonProperty('Description', String)
+  public description = '';
   @JsonProperty('PrixUnitaire', Number)
   public prixUnitaire = 0;
   @JsonProperty('PrixTotal', Number)

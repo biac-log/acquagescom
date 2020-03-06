@@ -58,7 +58,47 @@ export default class EditionDevis extends Vue {
   private client!: Compte;
   @Getter("documentModule/getEmail")
   private email!: string;
+  @Getter("documentModule/getDocument")
+  private document!: Devis;
+  @Getter("documentModule/getIsNewDoc")
+  private isNew!: boolean;
+  @Getter("documentModule/getRefDoc")
+  private refDoc!: string;
 
+  private created() {
+    if (this.document) this.displayDocument(this.document);
+  }
+
+  private displayDocument(doc: Devis) {
+    this.createBy = doc.createur;
+    this.date = this.formatDate(new Date(doc.date).toISOString().substr(0, 10));
+    this.demandePar = doc.demandePar;
+    this.Commentaire = doc.commentaire;
+    this.prixTotalTTC = doc.prixTotalTtc;
+    this.prixTotalHtva = doc.prixTotalHtva;
+    this.totalTva = doc.totalTva;
+    this.$store.commit("documentModule/setEmail", doc.email);
+    this.setPrixTotal(doc.articles);
+    this.$store.commit("documentModule/setArticles", doc.articles);
+    this.$store.commit("documentModule/setClient", this.createClient(doc));
+  }
+  setPrixTotal(articles: DocumentDetail[]) {
+    articles.forEach(a => {
+      a.prixTotal = a.prixUnitaire * a.quantite;
+    });
+  }
+  private createClient(doc: Devis): Compte {
+    return {
+      nom: doc.libelleClient,
+      numero: doc.numeroClient,
+      telephone: doc.telephone,
+      adrLigne1: doc.adresseLigne1,
+      adrLigne2: doc.adresseLigne2,
+      codePostal: doc.codePostal,
+      localite: doc.localite,
+      codePays: doc.codePays
+    };
+  }
   private formatDate(date: string) {
     if (!date) return null;
 
@@ -104,25 +144,26 @@ export default class EditionDevis extends Vue {
   private getModel(): Devis {
     let devis = new Devis();
 
-    devis.Date = this.getDate(this.date || "");
-    devis.Createur = this.createBy;
-    devis.NumeroClient = +this.client?.numero || 0;
-    devis.LibelleClient = this.client?.nom;
-    devis.AdresseLigne1 = this.client?.adrLigne1;
-    devis.AdresseLigne2 = this.client?.adrLigne2;
-    devis.CodePays = this.client?.codePays;
-    devis.CodePostal = this.client?.codePostal;
-    devis.Localite = this.client?.localite;
-    devis.Telephone = this.client?.telephone;
-    devis.Email = this.email[0];
+    devis.date = this.getDate(this.date || "");
+    devis.createur = this.createBy;
+    devis.numeroClient = +this.client?.numero || 0;
+    devis.libelleClient = this.client?.nom;
+    devis.adresseLigne1 = this.client?.adrLigne1;
+    devis.adresseLigne2 = this.client?.adrLigne2;
+    devis.codePays = this.client?.codePays;
+    devis.codePostal = this.client?.codePostal;
+    devis.localite = this.client?.localite;
+    devis.telephone = this.client?.telephone;
+    devis.email = this.email;
     this.setArticlesWithNumLine();
-    devis.Articles = this.articles;
-    devis.PrixTotalHtva = this.prixTotalHtva;
-    devis.TotalTva = this.totalTva;
-    devis.PrixTotalTtc = this.prixTotalTTC;
-    devis.Commentaire = this.Commentaire;
-    devis.DemandePar = this.demandePar;
-    devis.AcQuaDocsId = this.$route.params.guid;
+    devis.articles = this.articles;
+    devis.prixTotalHtva = this.prixTotalHtva;
+    devis.totalTva = this.totalTva;
+    devis.prixTotalTtc = this.prixTotalTTC;
+    devis.commentaire = this.Commentaire;
+    devis.demandePar = this.demandePar;
+    devis.acQuaDocsId = this.$route.params.guid;
+    devis.numeroDevis = this.refDoc;
 
     return devis;
   }
@@ -136,17 +177,36 @@ export default class EditionDevis extends Vue {
   }
 
   private sendDevis(devis: Devis) {
-    axios
-      .post(`${process.env.VUE_APP_ApiGesCom}/Devis`, devis)
-      .then(() => {
-        this.$store.commit('documentModule/setSuccessMessage', "Le devis a été sauvegardé avec succès, vous pouvez fermer la fenêtre.");
-      })
-      .catch(e => {
-        this.$store.commit(
-          `documentModule/setErrorMessage`,
-          `${e.message} ${process.env.VUE_APP_ApiGesCom}`
-        );
-      });
+    if (!this.isNew)
+      axios
+        .put(`${process.env.VUE_APP_ApiGesCom}/Devis`, devis)
+        .then(() => {
+          this.$store.commit(
+            "documentModule/setSuccessMessage",
+            "Le devis a été sauvegardé avec succès, vous pouvez fermer la fenêtre."
+          );
+        })
+        .catch(e => {
+          this.$store.commit(
+            `documentModule/setErrorMessage`,
+            `${e.message} ${process.env.VUE_APP_ApiGesCom}`
+          );
+        });
+    else
+      axios
+        .post(`${process.env.VUE_APP_ApiGesCom}/Devis`, devis)
+        .then(() => {
+          this.$store.commit(
+            "documentModule/setSuccessMessage",
+            "Le devis a été sauvegardé avec succès, vous pouvez fermer la fenêtre."
+          );
+        })
+        .catch(e => {
+          this.$store.commit(
+            `documentModule/setErrorMessage`,
+            `${e.message} ${process.env.VUE_APP_ApiGesCom}`
+          );
+        });
   }
 }
 </script>

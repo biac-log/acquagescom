@@ -2,9 +2,9 @@
   <v-app>
     <v-app-bar app color="#2979FF" dense dark>
       <v-spacer />
-      <!-- <v-toolbar-title v-if="newDoc">Création {{this.$route.name}}</v-toolbar-title>
-      <v-toolbar-title v-else>Modification {{this.$route.name}} N° {{refDoc}}</v-toolbar-title>-->
-      <v-toolbar-title>Création {{this.$route.name}}</v-toolbar-title>
+      <v-toolbar-title v-if="this.$route.name == 'Accueil'">{{this.$route.name}}</v-toolbar-title>
+      <v-toolbar-title v-else-if="newDoc">Création {{this.$route.name}}</v-toolbar-title>
+      <v-toolbar-title v-else>Modification {{this.$route.name}} N° {{refDoc}}</v-toolbar-title>
       <v-spacer />
     </v-app-bar>
 
@@ -17,7 +17,7 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
     </v-snackbar>
-    <v-snackbar v-model="displayErrorMessage" color="error" :timeout="30000">
+    <v-snackbar v-model="displayErrorMessage" color="error" :timeout="15000">
       {{ errorMessage }}
       <v-btn dark text @click="displayErrorMessage = false">
         <v-icon>mdi-close</v-icon>
@@ -35,10 +35,19 @@ import EditionDevis from "./components/EditionDevis.vue";
   components: { EditionDevis }
 })
 export default class App extends Vue {
-  // @Getter("documentModule/getIsNewDoc")
-  // private newDoc!: boolean;
-  // @Getter("documentModule/getRefDoc")
-  // private refDoc!: string;
+  @Getter("documentModule/getIsNewDoc")
+  private newDoc!: boolean;
+  @Getter("documentModule/getRefDoc")
+  private refDoc!: string;
+  @Action("documentModule/displaySuccessMessage")
+  private actionDisplaySuccessMessage: any;
+  @Action("documentModule/displayErrorMessage")
+  private actionDisplayErrorMessage: any;
+
+  @Getter("documentModule/successMessage")
+  private successMessage!: string;
+  @Getter("documentModule/errorMessage")
+  private errorMessage!: string;
 
   get displaySuccessMessage() {
     return this.$store.state.documentModule.displaySuccessMessage;
@@ -46,23 +55,12 @@ export default class App extends Vue {
   set displaySuccessMessage(value: boolean) {
     this.actionDisplaySuccessMessage(value);
   }
-  @Action("documentModule/displaySuccessMessage")
-  private actionDisplaySuccessMessage: any;
-
-  @Getter("documentModule/successMessage")
-  private successMessage!: string;
-
-    get displayErrorMessage() {
+  get displayErrorMessage() {
     return this.$store.state.documentModule.displayErrorMessage;
   }
   set displayErrorMessage(value: boolean) {
     this.actionDisplayErrorMessage(value);
   }
-  @Action("documentModule/displayErrorMessage")
-  private actionDisplayErrorMessage: any;
-
-  @Getter("documentModule/errorMessage")
-  private errorMessage!: string;
 
   private created() {
     this.$store.commit(

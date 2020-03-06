@@ -14,7 +14,8 @@ export interface DocumentState {
     messageClientNotFound: string;
     displaySuccessMessage: boolean;
     successMessage: string;
-
+    isNewDoc: boolean;
+    refDoc: string;
 }
 
 

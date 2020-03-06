@@ -73,7 +73,7 @@
                   <v-text-field
                     class="min-height"
                     label="Code postal et localité"
-                    placeholder="Ex: LU-1234 Luxembourg"
+                    placeholder="Ex: L-1234 Luxembourg"
                     :value="cpLocalite"
                     required
                   ></v-text-field>
@@ -96,6 +96,8 @@
                   :nudge-right="40"
                   transition="scale-transition"
                   offset-y
+                  max-width="290px"
+                  min-width="290px"
                 >
                   <template v-slot:activator="{ on }">
                     <v-text-field
@@ -233,8 +235,10 @@ export default class ZoneEdition extends Vue {
   private colorDateOk = COLOR_NOT_OK;
 
   public mounted() {
-    if (this.client) this.colorCustomerFound = COLOR_OK;
-    else this.colorCustomerFound = COLOR_NOT_OK;
+    if (this.client) {
+      this.colorCustomerFound = COLOR_OK;
+      this.$store.commit("documentModule/setMessageClientNotFound", "");
+    } else this.colorCustomerFound = COLOR_NOT_OK;
   }
 
   @Watch("dateFromDatePicker")
@@ -329,6 +333,7 @@ export default class ZoneEdition extends Vue {
   private onClientChanged(newValue: Compte, oldValue: Compte) {
     if (newValue) {
       this.numeroClient = newValue.numero.toString();
+      this.$store.commit("setMessageClientNotFound", "")
       this.$store.dispatch("documentModule/getEmail", newValue.numero);
       this.colorNumCli = "primary";
       this.colorCustomerFound = COLOR_OK;

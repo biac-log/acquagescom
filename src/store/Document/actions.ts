@@ -6,6 +6,7 @@ import { Compte } from '@/datas/Compte';
 import { JsonConvert, ValueCheckingMode } from 'json2typescript';
 import { DocumentDetail } from '@/datas/DocumentDetail';
 import { Email } from '@/datas/Email';
+import { Devis } from '@/datas/Devis';
 
 
 export const actions: ActionTree<DocumentState, RootState> = {
@@ -50,12 +51,29 @@ export const actions: ActionTree<DocumentState, RootState> = {
       .then(response => {
         if (response.data) {
           if (response.data.AdressesEmail)
-            commit('setEmail', response.data.AdressesEmail);
+            commit('setEmail', response.data.AdressesEmail[0]);
         }
       })
       .catch(e => {
         commit(
-          `documentModule/setErrorMessage`,
+          `setErrorMessage`,
+          `${e.message} ${process.env.VUE_APP_ApiAcQua}`
+        );
+      });
+  },
+  getDocument({ commit }, acQuaDocsId){
+    axios
+      .get<Devis>(
+        `${process.env.VUE_APP_ApiGesCom}/Devis?acQuaDocsId=${acQuaDocsId}`
+      )
+      .then(response => {
+        if (response.data) {
+            commit('setDocument', response.data);
+        }
+      })
+      .catch(e => {
+        commit(
+          `setErrorMessage`,
           `${e.message} ${process.env.VUE_APP_ApiAcQua}`
         );
       });

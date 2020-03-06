@@ -42,7 +42,7 @@
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="8">
-                      <v-text-field v-model="editedItem.libelle" label="Description"></v-text-field>
+                      <v-text-field v-model="editedItem.description" label="Description"></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="2">
                       <v-text-field
@@ -127,7 +127,7 @@ export default class ZoneEdition extends Vue {
       sortable: false,
       align: "right"
     },
-    { text: "Description", value: "libelle", sortable: false },
+    { text: "Description", value: "description", sortable: false },
     {
       text: "Prix / unité",
       value: "prixUnitaire",
@@ -155,7 +155,7 @@ export default class ZoneEdition extends Vue {
   private editedItem = {
     numeroLigne: 0,
     quantite: 1,
-    libelle: "",
+    description: "",
     prixUnitaire: 0,
     prixTotal: 0,
     tauxTva: 0
@@ -163,7 +163,7 @@ export default class ZoneEdition extends Vue {
   private defaultItem = {
     numeroLigne: 0,
     quantite: 1,
-    libelle: "",
+    description: "",
     prixUnitaire: 0,
     prixTotal: 0,
     tauxTva: 0
@@ -234,19 +234,19 @@ export default class ZoneEdition extends Vue {
   }
 
   private isFirstItem(ligneArticle: DocumentDetail): boolean {
-    return this.articles.findIndex(a => a.libelle == ligneArticle.libelle) == 0;
+    return this.articles.findIndex(a => a.description == ligneArticle.description) == 0;
   }
 
   private isLastItem(ligneArticle: DocumentDetail): boolean {
     return (
-      this.articles.findIndex(a => a.libelle == ligneArticle.libelle) ==
+      this.articles.findIndex(a => a.description == ligneArticle.description) ==
       this.articles.length - 1
     );
   }
 
   private moveUp(ligneArticle: DocumentDetail) {
     const oldIndex = this.articles.findIndex(
-      a => a.libelle == ligneArticle.libelle
+      a => a.description == ligneArticle.description
     );
     if (oldIndex <= 0) return;
     const newIndex = oldIndex - 1;
@@ -256,7 +256,7 @@ export default class ZoneEdition extends Vue {
 
   private moveDown(ligneArticle: DocumentDetail) {
     const oldIndex = this.articles.findIndex(
-      a => a.libelle == ligneArticle.libelle
+      a => a.description == ligneArticle.description
     );
     if (oldIndex >= this.articles.length - 1) return;
     const newIndex = oldIndex + 1;
