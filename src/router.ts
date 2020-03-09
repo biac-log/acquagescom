@@ -18,8 +18,8 @@ const getDocument: NavigationGuard = (to, from, next) => {
                 store.commit('documentModule/setDocument', response.data);
                 store.commit('documentModule/setIsNewDoc', false);
                 store.commit('documentModule/setRefDoc', response.data.numeroDevis);
-                next();
             }
+            next();
         })
         .catch(e => {
             if (e.response.status === 400) {

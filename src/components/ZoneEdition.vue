@@ -333,7 +333,7 @@ export default class ZoneEdition extends Vue {
   private onClientChanged(newValue: Compte, oldValue: Compte) {
     if (newValue) {
       this.numeroClient = newValue.numero.toString();
-      this.$store.commit("setMessageClientNotFound", "")
+      this.$store.commit("documentModule/setMessageClientNotFound", "")
       this.$store.dispatch("documentModule/getEmail", newValue.numero);
       this.colorNumCli = "primary";
       this.colorCustomerFound = COLOR_OK;
