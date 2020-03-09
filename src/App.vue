@@ -39,15 +39,16 @@ export default class App extends Vue {
   private newDoc!: boolean;
   @Getter("documentModule/getRefDoc")
   private refDoc!: string;
-  @Action("messagesModule/displaySuccessMessage")
-  private actionDisplaySuccessMessage: any;
-  @Action("messagesModule/displayErrorMessage")
-  private actionDisplayErrorMessage: any;
-
+  
   @Getter("messagesModule/successMessage")
   private successMessage!: string;
   @Getter("messagesModule/errorMessage")
   private errorMessage!: string;
+
+  @Action("messagesModule/displaySuccessMessage")
+  private actionDisplaySuccessMessage: any;
+  @Action("messagesModule/displayErrorMessage")
+  private actionDisplayErrorMessage: any;
 
   get displaySuccessMessage() {
     return this.$store.state.messagesModule.displaySuccessMessage;
@@ -55,6 +56,7 @@ export default class App extends Vue {
   set displaySuccessMessage(value: boolean) {
     this.actionDisplaySuccessMessage(value);
   }
+
   get displayErrorMessage() {
     return this.$store.state.messagesModule.displayErrorMessage;
   }

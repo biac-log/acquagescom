@@ -101,12 +101,11 @@ import { Component, Vue, Prop, PropSync } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 import { DocumentDetail } from "@/datas/DocumentDetail";
 import Sortable from "sortablejs";
-const MODULE_NAME = "documentModule";
 const TVA = 17;
 
 @Component({})
 export default class ZoneEdition extends Vue {
-  @Getter(`${MODULE_NAME}/getArticles`)
+  @Getter(`documentModule/getArticles`)
   private articles!: DocumentDetail[];
 
   private dialog = false;
@@ -194,7 +193,7 @@ export default class ZoneEdition extends Vue {
     this.editedIndex = this.articles.indexOf(item);
     this.editedItem = Object.assign({}, item);
     this.dialog = true;
-    this.$store.dispatch(`${MODULE_NAME}/saveArticles`, this.articles);
+    this.$store.dispatch(`documentModule/saveArticles`, this.articles);
     this.$emit("calculPrix");
   }
 
@@ -202,7 +201,7 @@ export default class ZoneEdition extends Vue {
     const index = this.articles.indexOf(item);
     confirm("Êtes-vous sûr de vouloir supprimer cet article ?") &&
       this.articles.splice(index, 1);
-    this.$store.dispatch(`${MODULE_NAME}/saveArticles`, this.articles);
+    this.$store.dispatch(`documentModule/saveArticles`, this.articles);
     this.dialog = false;
     this.$emit("calculPrix");
   }
@@ -229,7 +228,7 @@ export default class ZoneEdition extends Vue {
       this.editedIndex = -1;
       (this.$refs.quantiteField as HTMLInputElement).focus();
     }
-    this.$store.dispatch(`${MODULE_NAME}/saveArticles`, this.articles);
+    this.$store.dispatch(`documentModule/saveArticles`, this.articles);
     this.$emit("calculPrix");
   }
 

@@ -54,16 +54,17 @@ export default class EditionDevis extends Vue {
 
   @Getter(`documentModule/getArticles`)
   private articles!: DocumentDetail[];
-  @Getter("documentModule/getClient")
-  private client!: Compte;
-  @Getter("documentModule/getEmail")
-  private email!: string;
   @Getter("documentModule/getDocument")
   private document!: Devis;
   @Getter("documentModule/getIsNewDoc")
   private isNew!: boolean;
   @Getter("documentModule/getRefDoc")
   private refDoc!: string;
+
+  @Getter("clientModule/getClient")
+  private client!: Compte;
+  @Getter("clientModule/getEmail")
+  private email!: string;
 
   private created() {
     if (this.document) this.displayDocument(this.document);
@@ -77,10 +78,10 @@ export default class EditionDevis extends Vue {
     this.prixTotalTTC = doc.prixTotalTtc;
     this.prixTotalHtva = doc.prixTotalHtva;
     this.totalTva = doc.totalTva;
-    this.$store.commit("documentModule/setEmail", doc.email);
+    this.$store.commit("clientModule/setEmail", doc.email);
     this.setPrixTotal(doc.articles);
     this.$store.commit("documentModule/setArticles", doc.articles);
-    this.$store.commit("documentModule/setClient", this.createClient(doc));
+    this.$store.commit("clientModule/setClient", this.createClient(doc));
   }
   setPrixTotal(articles: DocumentDetail[]) {
     articles.forEach(a => {

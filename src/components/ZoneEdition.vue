@@ -90,36 +90,7 @@
             <v-card-title :class="colorDateOk">
               <v-row>
                 <span class="ml-2 mt-2">Date</span>
-                <v-menu
-                  v-model="fromDateMenu"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="290px"
-                >
-                  <template v-slot:activator="{ on }">
-                    <v-text-field
-                      class="ml-2 mb-n5 mr-3 float-right min-width"
-                      v-model="dateCreation"
-                      label="Date"
-                      placeholder="jj/mm/aaaa"
-                      append-icon="mdi-calendar"
-                      v-on="on"
-                      :rules="dateRules"
-                      solo
-                      counter="10"
-                      maxlength="10"
-                    ></v-text-field>
-                  </template>
-                  <v-date-picker
-                    locale="fr-fr"
-                    v-model="dateFromDatePicker"
-                    no-title
-                    @input="fromDateMenu = false"
-                  ></v-date-picker>
-                </v-menu>
+                <DatePickerPerso :dateFromPicker.sync="dateCreation" :colorDate.sync="colorDateOk"/>
               </v-row>
             </v-card-title>
             <v-container>
@@ -190,32 +161,23 @@ import { Email } from "../datas/Email";
 import axios from "axios";
 import { JsonConvert, ValueCheckingMode } from "json2typescript";
 import SearchCustomers from "@/components/SearchCustomers.vue";
+import DatePickerPerso from "@/components/DatePickerPerso.vue";
 import { getters } from "../store/Document/getters";
 const COLOR_OK = "green lighten-1 white--text";
 const COLOR_NOT_OK = "orange lighten-3";
 
-@Component({ components: { SearchCustomers } })
+@Component({ components: { SearchCustomers, DatePickerPerso } })
 export default class ZoneEdition extends Vue {
-  @Getter("documentModule/getLibelle")
-  private libelleClient!: string;
-  @Getter("documentModule/getTelephone")
-  private telephone!: string;
-  @Getter("documentModule/getAdrLigne1")
-  private adrLigne1!: string;
-  @Getter("documentModule/getAdrLigne2")
-  private adrLigne2!: string;
-  @Getter("documentModule/getLocalite")
-  private cpLocalite!: string;
-  @Getter("documentModule/getClient")
+  @Getter("clientModule/getClient")
   private client!: Compte;
-  @Getter("documentModule/getEmail")
+  @Getter("clientModule/getLocalite")
+  private cpLocalite!: string;
+  @Getter("clientModule/getEmail")
   private email!: string;
-  
+  @Getter("clientModule/loading")
+  private loading!: boolean;
   @Getter("messagesModule/getClientNotFound")
   private customerNotFound!: string;
-
-  @Getter("documentModule/loading")
-  private loading!: boolean;
 
   @PropSync("createur")
   private creePar!: string;
@@ -226,123 +188,34 @@ export default class ZoneEdition extends Vue {
   @PropSync("commentaire")
   private Comment!: string;
 
-  private numeroClient = this.getNumCli();
+  private numeroClient = "";
+  private libelleClient = "";
+  private telephone = "";
+  private adrLigne1 = "";
+  private adrLigne2 = "";
   private searchClientDialog = false;
-  private fromDateMenu = false;
-
-  private dateFromDatePicker = new Date().toISOString().substr(0, 10);
   private colorNumCli = "primary";
   private colorCustomerFound = COLOR_NOT_OK;
   private colorDateOk = COLOR_NOT_OK;
 
   public mounted() {
     if (this.client) {
+      this.displayClient(this.client);
       this.colorCustomerFound = COLOR_OK;
       this.$store.commit("messagesModule/setMessageClientNotFound", "");
     } else this.colorCustomerFound = COLOR_NOT_OK;
   }
-
-  @Watch("dateFromDatePicker")
-  private ondateFromDatePickerChanged(newValue: Compte, oldValue: Compte) {
-    this.dateCreation = this.formatDate(this.dateFromDatePicker) || "";
-  }
-
-  //Doit recevoir une date au format JJ/MM/AAAA après année 2000
-  private verifyDate(date: string): boolean {
-    if (!date) return false;
-
-    const [dayStr, monthStr, yearStr] = date.split("/");
-    const day = +dayStr;
-    const month = +monthStr;
-    const year = +yearStr;
-    if (day <= 0 || month <= 0 || month > 12 || year < 2000) return false;
-
-    const isBisextile = year % 100 === 0 ? year % 400 === 0 : year % 4 === 0;
-
-    if (month == 2 && isBisextile && day > 29) return false;
-    if (month == 2 && !isBisextile && day > 28) return false;
-
-    if (
-      (month == 1 ||
-        month == 3 ||
-        month == 5 ||
-        month == 7 ||
-        month == 8 ||
-        month == 10 ||
-        month == 12) &&
-      day > 31
-    )
-      return false;
-    if (day > 30) return false;
-
-    return true;
-  }
-
-  private formatDate(date: string) {
-    if (!date) return null;
-
-    const [year, month, day] = date.split("-");
-    return `${day}/${month}/${year}`;
+  @Watch("client")
+  private onClientChanged(newValue: Compte, oldValue: Compte) {
+    if (newValue != oldValue) {
+      if (newValue == undefined) this.cleanDisplayClient();
+      else this.displayClient(newValue);
+    }
   }
 
   private emailRules = [
     (e: any) => this.isEmailValid(e) || "L'adresse mail n'est pas valide"
   ];
-  private dateRules = [
-    (d: any) => this.isDateValid(d) || "La date n'est pas valide"
-  ];
-
-  private isDateValid(date: string): boolean {
-    if (date != "" && date.length == 10) {
-      if (this.verifyDate(date)) {
-        this.colorDateOk = COLOR_OK;
-        return true;
-      } else {
-        this.colorDateOk = COLOR_NOT_OK;
-        return false;
-      }
-    } else {
-      this.colorDateOk = COLOR_NOT_OK;
-      return true;
-    }
-  }
-  private getNumCli(): string {
-    return this.$store.getters["documentModule/getNumeroClient"];
-  }
-
-  private triggerCheck() {
-    if (this.numeroClient.length == 9) this.searchClient();
-    else {
-      this.$store.commit("documentModule/clearClient");
-      this.$store.commit("documentModule/clearEmail");
-      this.colorNumCli = "primary";
-      const errorMessage =
-        this.numeroClient.length === 0
-          ? "Veuillez entrer un numéro de client"
-          : "Numéro de client invalide";
-      this.$store.commit(
-        "messagesModule/setMessageClientNotFound",
-        errorMessage
-      );
-    }
-  }
-  private searchClient() {
-    this.$store.dispatch("documentModule/searchCustomer", this.numeroClient);
-  }
-
-  @Watch("client")
-  private onClientChanged(newValue: Compte, oldValue: Compte) {
-    if (newValue) {
-      this.numeroClient = newValue.numero.toString();
-      this.$store.commit("messagesModule/setMessageClientNotFound", "")
-      this.$store.dispatch("documentModule/getEmail", newValue.numero);
-      this.colorNumCli = "primary";
-      this.colorCustomerFound = COLOR_OK;
-    } else {
-      this.colorNumCli = "red";
-      this.colorCustomerFound = COLOR_NOT_OK;
-    }
-  }
 
   private isEmailValid(mail: string): boolean {
     if (mail == null || mail == "") return true;
@@ -352,35 +225,56 @@ export default class ZoneEdition extends Vue {
     return regexp.test(mail);
   }
 
+  private triggerCheck() {
+    if (this.numeroClient.length == 9) this.searchClient();
+    else this.clearClient();
+  }
+
+  private clearClient() {
+    this.$store.commit("clientModule/clearClient");
+    this.$store.commit("clientModule/clearEmail");
+    this.colorNumCli = "primary";
+    const errorMessage =
+      this.numeroClient.length === 0
+        ? "Veuillez entrer un numéro de client"
+        : "Numéro de client invalide";
+    this.$store.commit("messagesModule/setMessageClientNotFound", errorMessage);
+  }
+
+  private searchClient() {
+    this.$store.dispatch("clientModule/searchCustomer", this.numeroClient);
+  }
+
+  private cleanDisplayClient() {
+    this.telephone = "";
+    this.libelleClient = "";
+    this.adrLigne1 = "";
+    this.adrLigne2 = "";
+    this.cpLocalite = "";
+    this.colorNumCli = "red";
+    this.colorCustomerFound = COLOR_NOT_OK;
+  }
+
+  private displayClient(client: Compte) {
+    this.numeroClient = client.numero.toString();
+    this.telephone = client.telephone;
+    this.libelleClient = client.nom;
+    this.adrLigne1 = client.adrLigne1;
+    this.adrLigne2 = client.adrLigne2;
+    this.$store.commit("messagesModule/setMessageClientNotFound", "");
+    this.$store.dispatch("clientModule/getEmail", client.numero);
+    this.colorNumCli = "primary";
+    this.colorCustomerFound = COLOR_OK;
+  }
+
   private editCustomerFromSearch(client: Compte) {
-    this.$store.commit("documentModule/setClient", client);
+    this.$store.commit("clientModule/setClient", client);
     this.searchClientDialog = false;
     this.colorNumCli = "primary";
   }
 
   private refreshCustomersList() {
-    this.$store.commit("documentModule/setLoading", true);
-    let clients: Compte[] | null = null;
-    axios
-      .post<Compte[]>(
-        `${process.env.VUE_APP_ApiAcQua}/Comptes/GetComptes?compteBloquer=false&typeAcces=PSQL_BTrieve`,
-        ["Client"]
-      )
-      .then(response => {
-        const jsonConvert: JsonConvert = new JsonConvert();
-        jsonConvert.valueCheckingMode = ValueCheckingMode.ALLOW_NULL;
-        clients = jsonConvert.deserializeArray(response.data, Compte);
-        this.$store.commit("documentModule/saveCustomers", clients);
-      })
-      .catch(e => {
-        this.$store.commit(
-          "messagesModule/setErrorMessage",
-          e.message + " " + process.env.VUE_APP_ApiAcQuaUrl
-        );
-      })
-      .finally(() => {
-        this.$store.commit("documentModule/setLoading", false);
-      });
+    this.$store.dispatch("clientModule/refreshCustomersList")
   }
 }
 </script>

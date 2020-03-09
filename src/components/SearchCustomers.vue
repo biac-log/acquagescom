@@ -46,9 +46,9 @@ import { Compte } from "@/datas/Compte";
 export default class SearchCustomers extends Vue {
   private search = "";
 
-  @Getter("documentModule/getCustomers")
+  @Getter("clientModule/getCustomers")
   private customers!: Compte[];
-  @Getter("documentModule/loading")
+  @Getter("clientModule/loading")
   private loading!: boolean;
 
   private headers = [

@@ -12,16 +12,6 @@ export const mutations: MutationTree<DocumentState> = {
     setDocument: (state, doc: Devis) => {
         state.document = doc;
     },
-    setClient: (state, client: Compte) => {
-        state.client = client;
-    },
-    setEmail: (state, email: string) => {
-        state.email = email;
-        localStorage.setItem('email', email);
-    },
-    clearClient: (state) => {
-        state.client = undefined;
-    },
     setArticles(state, list: DocumentDetail[]) {
         state.articles = list;
     },
@@ -30,15 +20,6 @@ export const mutations: MutationTree<DocumentState> = {
     },
     saveArticles(state, articles) {
         state.articles = articles;
-    },
-    saveCustomers(state, clients: Compte[]) {
-        state.customers = clients;
-    },
-    loadEmail(state) {
-        state.email = localStorage.getItem('email') || "";
-    },
-    clearEmail(state) {
-        state.email = '';
     },
     setIsNewDoc(state, value: boolean){
         state.isNewDoc = value;

@@ -2,20 +2,19 @@ import { Module } from 'vuex';
 import { getters } from './getters';
 import { actions } from './actions';
 import { mutations } from './mutations';
-import { DocumentState } from './types';
+import { ClientState } from './types';
 import { RootState } from '../types';
 
-export const state: DocumentState = {
-  document: undefined,
-  articles: [],
+export const state: ClientState = {
+  client: undefined,
+  customers: [],
   loading: false,
-  isNewDoc: true,
-  refDoc:''
+  email:'',
 };
 
 const namespaced = true;
 
-export const documentModule: Module<DocumentState, RootState> = {
+export const clientModule: Module<ClientState, RootState> = {
   namespaced,
   state,
   getters,
