@@ -39,24 +39,24 @@ export default class App extends Vue {
   private newDoc!: boolean;
   @Getter("documentModule/getRefDoc")
   private refDoc!: string;
-  @Action("documentModule/displaySuccessMessage")
+  @Action("messagesModule/displaySuccessMessage")
   private actionDisplaySuccessMessage: any;
-  @Action("documentModule/displayErrorMessage")
+  @Action("messagesModule/displayErrorMessage")
   private actionDisplayErrorMessage: any;
 
-  @Getter("documentModule/successMessage")
+  @Getter("messagesModule/successMessage")
   private successMessage!: string;
-  @Getter("documentModule/errorMessage")
+  @Getter("messagesModule/errorMessage")
   private errorMessage!: string;
 
   get displaySuccessMessage() {
-    return this.$store.state.documentModule.displaySuccessMessage;
+    return this.$store.state.messagesModule.displaySuccessMessage;
   }
   set displaySuccessMessage(value: boolean) {
     this.actionDisplaySuccessMessage(value);
   }
   get displayErrorMessage() {
-    return this.$store.state.documentModule.displayErrorMessage;
+    return this.$store.state.messagesModule.displayErrorMessage;
   }
   set displayErrorMessage(value: boolean) {
     this.actionDisplayErrorMessage(value);
@@ -64,7 +64,7 @@ export default class App extends Vue {
 
   private created() {
     this.$store.commit(
-      "documentModule/setMessageClientNotFound",
+      "messagesModule/setMessageClientNotFound",
       "Veuillez entrer un numéro de client"
     );
   }

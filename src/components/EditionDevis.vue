@@ -177,33 +177,35 @@ export default class EditionDevis extends Vue {
   }
 
   private sendDevis(devis: Devis) {
-    if (!this.isNew)
+    if (!this.isNew){
+      const url = `${process.env.VUE_APP_ApiGesCom}/${this.$route.path.split('/')[1]}`;
       axios
-        .put(`${process.env.VUE_APP_ApiGesCom}/Devis`, devis)
+        .put(url, devis)
         .then(() => {
           this.$store.commit(
-            "documentModule/setSuccessMessage",
+            "messagesModule/setSuccessMessage",
             "Le devis a été sauvegardé avec succès, vous pouvez fermer la fenêtre."
           );
         })
         .catch(e => {
           this.$store.commit(
-            `documentModule/setErrorMessage`,
+            `messagesModule/setErrorMessage`,
             `${e.message} ${process.env.VUE_APP_ApiGesCom}`
           );
         });
+    }
     else
       axios
         .post(`${process.env.VUE_APP_ApiGesCom}/Devis`, devis)
         .then(() => {
           this.$store.commit(
-            "documentModule/setSuccessMessage",
+            "messagesModule/setSuccessMessage",
             "Le devis a été sauvegardé avec succès, vous pouvez fermer la fenêtre."
           );
         })
         .catch(e => {
           this.$store.commit(
-            `documentModule/setErrorMessage`,
+            `messagesModule/setErrorMessage`,
             `${e.message} ${process.env.VUE_APP_ApiGesCom}`
           );
         });

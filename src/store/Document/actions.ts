@@ -25,24 +25,24 @@ export const actions: ActionTree<DocumentState, RootState> = {
             Compte
           );
           commit("setClient", compte);
-          commit("setMessageClientNotFound", "")
+          commit("messagesModule/setMessageClientNotFound", "", { root: true });
         } else {
           commit("clearClient");
           commit("clearEmail");
-          commit("setMessageClientNotFound", "Ce client n'existe pas");
+          commit("messagesModule/setMessageClientNotFound", "Ce client n'existe pas", { root: true });
         }
       })
       .catch(e => {
         commit(
-          `setErrorMessage`,
-          `${e.message} ${process.env.VUE_APP_ApiAcQua}`
+          `messagesModule/setErrorMessage`,
+          `${e.message} ${process.env.VUE_APP_ApiAcQua}`, { root: true }
         );
       })
       .finally(() => {
         commit('setLoading', false);
       });
   },
-  getEmail({ commit, rootState, rootGetters }, numeroClient){
+  getEmail({ commit, rootState, rootGetters }, numeroClient) {
     commit('clearEmail');
     axios
       .get<Email>(
@@ -56,25 +56,25 @@ export const actions: ActionTree<DocumentState, RootState> = {
       })
       .catch(e => {
         commit(
-          `setErrorMessage`,
-          `${e.message} ${process.env.VUE_APP_ApiAcQua}`
+          `messagesModule/setErrorMessage`,
+          `${e.message} ${process.env.VUE_APP_ApiAcQua}`, { root: true }
         );
       });
   },
-  getDocument({ commit }, acQuaDocsId){
+  getDocument({ commit }, acQuaDocsId) {
     axios
       .get<Devis>(
         `${process.env.VUE_APP_ApiGesCom}/Devis?acQuaDocsId=${acQuaDocsId}`
       )
       .then(response => {
         if (response.data) {
-            commit('setDocument', response.data);
+          commit('setDocument', response.data);
         }
       })
       .catch(e => {
         commit(
-          `setErrorMessage`,
-          `${e.message} ${process.env.VUE_APP_ApiAcQua}`
+          `messagesModule/setErrorMessage`,
+          `${e.message} ${process.env.VUE_APP_ApiAcQua}`, { root: true }
         );
       });
   },
@@ -94,19 +94,13 @@ export const actions: ActionTree<DocumentState, RootState> = {
   loadCustomers(context) {
     context.commit('loadCustomers');
   },
-  loadClient(context){
+  loadClient(context) {
     context.commit('loadClient');
   },
-  reloadAllDatas(context){
+  reloadAllDatas(context) {
     context.commit('loadClient');
     context.commit('loadCustomers');
     context.commit('loadArticles');
     context.commit('loadEmail');
   },
-  displaySuccessMessage(context, value: boolean) {
-    context.commit('displaySuccessMessage', value);
-  },
-  displayErrorMessage(context, value: boolean) {
-    context.commit('displayErrorMessage', value);
-  }
 };

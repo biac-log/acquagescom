@@ -210,7 +210,8 @@ export default class ZoneEdition extends Vue {
   private client!: Compte;
   @Getter("documentModule/getEmail")
   private email!: string;
-  @Getter("documentModule/getClientNotFound")
+  
+  @Getter("messagesModule/getClientNotFound")
   private customerNotFound!: string;
 
   @Getter("documentModule/loading")
@@ -237,7 +238,7 @@ export default class ZoneEdition extends Vue {
   public mounted() {
     if (this.client) {
       this.colorCustomerFound = COLOR_OK;
-      this.$store.commit("documentModule/setMessageClientNotFound", "");
+      this.$store.commit("messagesModule/setMessageClientNotFound", "");
     } else this.colorCustomerFound = COLOR_NOT_OK;
   }
 
@@ -320,7 +321,7 @@ export default class ZoneEdition extends Vue {
           ? "Veuillez entrer un numéro de client"
           : "Numéro de client invalide";
       this.$store.commit(
-        "documentModule/setMessageClientNotFound",
+        "messagesModule/setMessageClientNotFound",
         errorMessage
       );
     }
@@ -333,7 +334,7 @@ export default class ZoneEdition extends Vue {
   private onClientChanged(newValue: Compte, oldValue: Compte) {
     if (newValue) {
       this.numeroClient = newValue.numero.toString();
-      this.$store.commit("documentModule/setMessageClientNotFound", "")
+      this.$store.commit("messagesModule/setMessageClientNotFound", "")
       this.$store.dispatch("documentModule/getEmail", newValue.numero);
       this.colorNumCli = "primary";
       this.colorCustomerFound = COLOR_OK;
@@ -373,7 +374,7 @@ export default class ZoneEdition extends Vue {
       })
       .catch(e => {
         this.$store.commit(
-          "documentModule/setErrorMessage",
+          "messagesModule/setErrorMessage",
           e.message + " " + process.env.VUE_APP_ApiAcQuaUrl
         );
       })

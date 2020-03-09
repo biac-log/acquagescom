@@ -8,15 +8,10 @@ import { RootState } from '../types';
 export const state: DocumentState = {
   document: undefined,
   client: undefined,
-  errorMessage: '',
-  displayErrorMessage: false,
   customers: [],
   articles: [],
   loading: false,
   email:'',
-  messageClientNotFound: '',
-  successMessage: '',
-  displaySuccessMessage: false,
   isNewDoc: true,
   refDoc:''
 };

@@ -14,7 +14,6 @@ export const mutations: MutationTree<DocumentState> = {
     },
     setClient: (state, client: Compte) => {
         state.client = client;
-        // localStorage.setItem('client', JSON.stringify(client));
     },
     setEmail: (state, email: string) => {
         state.email = email;
@@ -22,7 +21,6 @@ export const mutations: MutationTree<DocumentState> = {
     },
     clearClient: (state) => {
         state.client = undefined;
-        // localStorage.removeItem('client');
     },
     setArticles(state, list: DocumentDetail[]) {
         state.articles = list;
@@ -31,45 +29,16 @@ export const mutations: MutationTree<DocumentState> = {
         state.articles.push(article);
     },
     saveArticles(state, articles) {
-        // localStorage.setItem('articles', JSON.stringify(articles));
         state.articles = articles;
-    },
-    loadArticles(state) {
-        state.articles = JSON.parse(localStorage.getItem('articles') || "[]");
     },
     saveCustomers(state, clients: Compte[]) {
         state.customers = clients;
-        // localStorage.setItem('clients', JSON.stringify(clients));
-    },
-    loadCustomers(state) {
-        state.customers = JSON.parse(localStorage.getItem('clients') || "[]");
-    },
-    loadClient(state) {
-        state.client = JSON.parse(localStorage.getItem('client') || '');
     },
     loadEmail(state) {
         state.email = localStorage.getItem('email') || "";
     },
     clearEmail(state) {
         state.email = '';
-        // localStorage.removeItem('email');
-    },
-    setMessageClientNotFound(state, message: string) {
-        state.messageClientNotFound = message;
-    },
-    setSuccessMessage(state, message: string) {
-        state.displaySuccessMessage = message !== '';
-        state.successMessage = message;
-    },
-    displaySuccessMessage(state, value: boolean) {
-        state.displaySuccessMessage = value;
-    },
-    setErrorMessage(state, message: string) {
-        state.displayErrorMessage = message !== '';
-        state.errorMessage = message;
-    },
-    displayErrorMessage(state, value: boolean) {
-        state.displayErrorMessage = value;
     },
     setIsNewDoc(state, value: boolean){
         state.isNewDoc = value;

@@ -17,9 +17,6 @@ export const getters: GetterTree<DocumentState, RootState> = {
     getClient(state) {
         return state.client;
     },
-    errorMessage(state): string {
-        return state.errorMessage;
-    },
     getCustomers(state): Compte[] {
         return state.customers;
     },
@@ -47,12 +44,6 @@ export const getters: GetterTree<DocumentState, RootState> = {
     },
     getEmail(state): string {
         return state.email;
-    },
-    getClientNotFound(state): string {
-        return state.messageClientNotFound;
-    },
-    successMessage(state): string {
-        return state.successMessage;
     },
     getIsNewDoc(state):boolean{
         return state.isNewDoc;

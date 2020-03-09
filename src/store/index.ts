@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { documentModule } from './Document/index';
+import { messagesModule } from './Messages/index';
 
 Vue.use(Vuex);
 
@@ -12,5 +13,6 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     documentModule,
+    messagesModule,
   }
 });
