@@ -11,5 +11,5 @@
 import { Component, Vue } from "vue-property-decorator";
 
 @Component({})
-export default class EditionDevis extends Vue {}
+export default class EditionDocument extends Vue {}
 </script>

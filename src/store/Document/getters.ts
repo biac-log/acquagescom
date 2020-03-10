@@ -19,5 +19,8 @@ export const getters: GetterTree<DocumentState, RootState> = {
     },
     getRefDoc(state) : string{
         return state.refDoc;
+    },
+    getGuidDoc(state): string{
+        return state.guidDoc;
     }
 };

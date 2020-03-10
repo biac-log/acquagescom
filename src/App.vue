@@ -3,6 +3,7 @@
     <v-app-bar app color="#2979FF" dense dark>
       <v-spacer />
       <v-toolbar-title v-if="this.$route.name == 'Accueil'">{{this.$route.name}}</v-toolbar-title>
+      <v-toolbar-title v-else-if="loading">Chargement...</v-toolbar-title>
       <v-toolbar-title v-else-if="newDoc">Création {{this.$route.name}}</v-toolbar-title>
       <v-toolbar-title v-else>Modification {{this.$route.name}} N° {{refDoc}}</v-toolbar-title>
       <v-spacer />
@@ -29,16 +30,18 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Getter, Action } from "vuex-class";
-import EditionDevis from "./components/EditionDevis.vue";
+import EditionDocument from "./components/EditionDocument.vue";
 
 @Component({
-  components: { EditionDevis }
+  components: { EditionDocument }
 })
 export default class App extends Vue {
   @Getter("documentModule/getIsNewDoc")
   private newDoc!: boolean;
   @Getter("documentModule/getRefDoc")
   private refDoc!: string;
+  @Getter ("documentModule/loading")
+  private loading!: boolean;
   
   @Getter("messagesModule/successMessage")
   private successMessage!: string;

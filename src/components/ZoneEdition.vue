@@ -158,8 +158,6 @@ import { Component, Vue, Prop, Watch, PropSync } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 import { Compte } from "@/datas/Compte";
 import { Email } from "../datas/Email";
-import axios from "axios";
-import { JsonConvert, ValueCheckingMode } from "json2typescript";
 import SearchCustomers from "@/components/SearchCustomers.vue";
 import DatePickerPerso from "@/components/DatePickerPerso.vue";
 import { getters } from "../store/Document/getters";

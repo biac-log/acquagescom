@@ -24,7 +24,10 @@ export const mutations: MutationTree<DocumentState> = {
     setIsNewDoc(state, value: boolean){
         state.isNewDoc = value;
     },
-    setRefDoc(satte, value: string){
+    setRefDoc(state, value: string){
         state.refDoc = value;
+    },
+    setGuidDoc(state, value: string){
+        state.guidDoc = value;
     }
 };

@@ -24,13 +24,12 @@
     </v-row>
     <v-footer color="white" absolute class="overline">
       <v-spacer></v-spacer>
-      {{$route.params.guid}}
+      {{guidDoc}}
     </v-footer>
   </v-container>
 </template>
 
 <script lang="ts">
-/* eslint-disable */
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import ZoneEdition from "./ZoneEdition.vue";
 import GrilleArticles from "./GrilleArticles.vue";
@@ -43,7 +42,7 @@ import axios from "axios";
 const TVA = 17;
 
 @Component({ components: { ZoneEdition, GrilleArticles } })
-export default class EditionDevis extends Vue {
+export default class EditionDocument extends Vue {
   public createBy = "";
   public date = this.formatDate(new Date().toISOString().substr(0, 10));
   public demandePar = "";
@@ -52,6 +51,8 @@ export default class EditionDevis extends Vue {
   public prixTotalHtva = 0;
   public totalTva = 0;
 
+  @Getter(`documentModule/getGuidDoc`)
+  private guidDoc!: string;
   @Getter(`documentModule/getArticles`)
   private articles!: DocumentDetail[];
   @Getter("documentModule/getDocument")
@@ -137,36 +138,36 @@ export default class EditionDevis extends Vue {
   }
 
   private save() {
-    const devis = this.getModel();
-    this.sendDevis(devis);
-    this.$store.commit("documentModule/setDocument", devis);
+    const doc = this.getModel();
+    this.sendDocument(doc);
   }
 
-  private getModel(): Devis {
-    let devis = new Devis();
-
-    devis.date = this.getDate(this.date || "");
-    devis.createur = this.createBy;
-    devis.numeroClient = +this.client?.numero || 0;
-    devis.libelleClient = this.client?.nom;
-    devis.adresseLigne1 = this.client?.adrLigne1;
-    devis.adresseLigne2 = this.client?.adrLigne2;
-    devis.codePays = this.client?.codePays;
-    devis.codePostal = this.client?.codePostal;
-    devis.localite = this.client?.localite;
-    devis.telephone = this.client?.telephone;
-    devis.email = this.email;
+  private getModel(): any {
     this.setArticlesWithNumLine();
-    devis.articles = this.articles;
-    devis.prixTotalHtva = this.prixTotalHtva;
-    devis.totalTva = this.totalTva;
-    devis.prixTotalTtc = this.prixTotalTTC;
-    devis.commentaire = this.Commentaire;
-    devis.demandePar = this.demandePar;
-    devis.acQuaDocsId = this.$route.params.guid;
-    devis.numeroDevis = this.refDoc;
+    const doc = {
+      date: this.getDate(this.date || ""),
+      createur: this.createBy,
+      numeroClient: +this.client?.numero || 0,
+      libelleClient: this.client?.nom,
+      adresseLigne1: this.client?.adrLigne1,
+      adresseLigne2: this.client?.adrLigne2,
+      codePays: this.client?.codePays,
+      codePostal: this.client?.codePostal,
+      localite: this.client?.localite,
+      telephone: this.client?.telephone,
+      email: this.email,
+      articles: this.articles,
+      prixTotalHtva: this.prixTotalHtva,
+      totalTva: this.totalTva,
+      prixTotalTtc: this.prixTotalTTC,
+      commentaire: this.Commentaire,
+      demandePar: this.demandePar,
+      acQuaDocsId: this.$store.getters["documentModule/getGuidDoc"],
+      numeroDevis: this.refDoc,
+      numeroBC: this.refDoc,
+    };
 
-    return devis;
+    return doc;
   }
   private setArticlesWithNumLine() {
     if (!this.articles) return;
@@ -177,39 +178,15 @@ export default class EditionDevis extends Vue {
     });
   }
 
-  private sendDevis(devis: Devis) {
-    if (!this.isNew){
-      const url = `${process.env.VUE_APP_ApiGesCom}/${this.$route.path.split('/')[1]}`;
-      axios
-        .put(url, devis)
-        .then(() => {
-          this.$store.commit(
-            "messagesModule/setSuccessMessage",
-            "Le devis a été sauvegardé avec succès, vous pouvez fermer la fenêtre."
-          );
-        })
-        .catch(e => {
-          this.$store.commit(
-            `messagesModule/setErrorMessage`,
-            `${e.message} ${process.env.VUE_APP_ApiGesCom}`
-          );
-        });
-    }
-    else
-      axios
-        .post(`${process.env.VUE_APP_ApiGesCom}/Devis`, devis)
-        .then(() => {
-          this.$store.commit(
-            "messagesModule/setSuccessMessage",
-            "Le devis a été sauvegardé avec succès, vous pouvez fermer la fenêtre."
-          );
-        })
-        .catch(e => {
-          this.$store.commit(
-            `messagesModule/setErrorMessage`,
-            `${e.message} ${process.env.VUE_APP_ApiGesCom}`
-          );
-        });
+  private sendDocument(devis: any) {
+    if (!this.isNew) {
+      this.$store.dispatch("documentModule/updateDocument", {
+        url: `${process.env.VUE_APP_ApiGesCom}/${
+          this.$route.path.split("/")[1]
+        }`,
+        doc: devis
+      });
+    } else this.$store.dispatch("documentModule/sendDevis", devis);
   }
 }
 </script>

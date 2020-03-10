@@ -10,7 +10,8 @@ export const state: DocumentState = {
   articles: [],
   loading: false,
   isNewDoc: true,
-  refDoc:''
+  refDoc:'',
+  guidDoc: '',
 };
 
 const namespaced = true;

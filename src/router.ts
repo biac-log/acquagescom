@@ -1,41 +1,52 @@
 import Vue from "vue";
 import Router, { NavigationGuard } from 'vue-router';
 import home from './views/Home.vue'
-import editionsDevis from './components/EditionDevis.vue';
+import EditionDocument from './components/EditionDocument.vue';
 import axios from 'axios';
 import store from './store';
 
 Vue.use(Router);
 
 const getDocument: NavigationGuard = (to, from, next) => {
-    if (!isGuid(to.params.guid)) next('/');
-
-    axios
-        .get<any>(
-            `${process.env.VUE_APP_ApiGesCom}/${to.path.split('/')[1]}?acQuaDocsId=${to.params.guid}`
-        )
-        .then(response => {
-            if (response.data) {
-                store.commit('documentModule/setDocument', response.data);
-                store.commit('documentModule/setIsNewDoc', false);
-                filldocRef(response.data);
-            }
-            next();
-        })
-        .catch(e => {
-            if (e.response != undefined && e.response.status === 400) {
-                store.commit(
-                    `messagesModule/setErrorMessage`,
-                    `Numéro de référence AcQuaDocs vide ou incorrect`
-                );
-            }
-            else
-                store.commit(
-                    `messagesModule/setErrorMessage`,
-                    `${e.message} ${process.env.VUE_APP_ApiAcQua}`
-                );
-            store.commit('documentModule/setIsNewDoc', true);
-        });
+    if (isGuid(to.params.docId)) {
+        store.commit('documentModule/setGuidDoc', to.params.docId);
+        store.commit('documentModule/setIsNewDoc', true);
+        next();
+    }
+    else {
+        store.commit('documentModule/setLoading', true);
+        const refDoc = to.params.docId.replace("%2F", "/");
+        axios
+            .get<any>(
+                `${process.env.VUE_APP_ApiGesCom}/${to.path.split('/')[1]}?documentId=${refDoc}`
+            )
+            .then(response => {
+                if (response.data) {
+                    store.commit('documentModule/setDocument', response.data);
+                    store.commit('documentModule/setIsNewDoc', false);
+                    store.commit('documentModule/setGuidDoc', response.data.acQuaDocsId);
+                    filldocRef(response.data);
+                    next();
+                }
+            })
+            .catch(e => {
+                if (e.response != undefined && e.response.status === 404) {
+                    store.commit(
+                        `messagesModule/setErrorMessage`,
+                        `Numéro de ${to.name} ${refDoc} incorrect`
+                    );
+                    next('/');
+                }
+                else
+                    store.commit(
+                        `messagesModule/setErrorMessage`,
+                        `${e.message} ${process.env.VUE_APP_ApiAcQua}`
+                    );
+            })
+            .finally(() => {
+                store.commit('documentModule/setLoading', false);
+            });
+    }
 }
 
 function isGuid(str: string): boolean {
@@ -46,10 +57,10 @@ function isGuid(str: string): boolean {
     return regexGuid.test(str);
 }
 
-function filldocRef(doc: any){
+function filldocRef(doc: any) {
     let ref = "";
-    if(doc.numeroDevis) ref = doc.numeroDevis;
-    if(doc.numeroBC) ref = doc.numeroBC;
+    if (doc.numeroDevis) ref = doc.numeroDevis;
+    if (doc.numeroBC) ref = doc.numeroBC;
     store.commit('documentModule/setRefDoc', ref);
 }
 
@@ -57,16 +68,16 @@ export default new Router({
     mode: "history",
     routes: [
         {
-            path: "/Devis/:guid",
+            path: "/Devis/:docId",
             name: "Devis",
-            component: editionsDevis,
+            component: EditionDocument,
             props: true,
             beforeEnter: getDocument,
         },
         {
-            path: "/BonCommande/:guid",
+            path: "/BonCommande/:docId",
             name: "Bon de commande",
-            component: editionsDevis,
+            component: EditionDocument,
             props: true,
             beforeEnter: getDocument,
         },

@@ -3,10 +3,11 @@ import { DocumentDetail } from '@/datas/DocumentDetail';
 
 export interface DocumentState {
     loading: boolean;
-    document?: Devis;
+    document?: any;
     articles: DocumentDetail[];
     isNewDoc: boolean;
     refDoc: string;
+    guidDoc: string;
 }
 
 

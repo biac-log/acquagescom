@@ -4,9 +4,7 @@ import { ClientState } from './types';
 import { RootState } from '../types';
 import { Compte } from '@/datas/Compte';
 import { JsonConvert, ValueCheckingMode } from 'json2typescript';
-import { DocumentDetail } from '@/datas/DocumentDetail';
 import { Email } from '@/datas/Email';
-import { Devis } from '@/datas/Devis';
 
 
 export const actions: ActionTree<ClientState, RootState> = {
