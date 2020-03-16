@@ -62,6 +62,7 @@ function filldocRef(doc: any) {
     if (doc.numeroDevis) ref = doc.numeroDevis;
     if (doc.numeroBC) ref = doc.numeroBC;
     if (doc.numeroBL) ref = doc.numeroBL;
+    if(doc.numeroFacture) ref = doc.numeroFacture;
     store.commit('documentModule/setRefDoc', ref);
 }
 
@@ -90,6 +91,13 @@ export default new Router({
         {
             path: "/BonLivraison/:docId",
             name: "Bon de livraison",
+            component: EditionDocument,
+            props: true,
+            beforeEnter: getDocument
+        },
+        {
+            path: "/Facture/:docId",
+            name: "Facture",
             component: EditionDocument,
             props: true,
             beforeEnter: getDocument

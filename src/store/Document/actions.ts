@@ -8,37 +8,37 @@ import router from '@/router';
 
 export const actions: ActionTree<DocumentState, RootState> = {
   updateDocument({ commit }, datas: any) {
-    
-        axios
+
+    axios
       .put(datas.url, datas.doc)
       .then(() => {
         commit(
           "messagesModule/setSuccessMessage",
-          `Le ${router.currentRoute.name} a été sauvegardé avec succès, vous pouvez fermer la fenêtre.`, {root:true}
+          `Le ${router.currentRoute.name} a été sauvegardé avec succès, vous pouvez fermer la fenêtre.`, { root: true }
         );
       })
       .catch(e => {
         commit(
           `messagesModule/setErrorMessage`,
-          `${e.message} ${process.env.VUE_APP_ApiGesCom}`, {root:true}
+          `${e.message} ${process.env.VUE_APP_ApiGesCom}`, { root: true }
         );
       });
   },
-  sendDevis({commit}, devis: DocumentGesCom) {
+  sendDevis({ commit }, devis: DocumentGesCom) {
     axios
-    .post(`${process.env.VUE_APP_ApiGesCom}/Devis`, devis)
-    .then(() => {
-      commit(
-        "messagesModule/setSuccessMessage",
-        "Le devis a été sauvegardé avec succès, vous pouvez fermer la fenêtre.", {root:true}
-      );
-    })
-    .catch(e => {
-      commit(
-        `messagesModule/setErrorMessage`,
-        `${e.message} ${process.env.VUE_APP_ApiGesCom}`
-      );
-    });
+      .post(`${process.env.VUE_APP_ApiGesCom}/Devis`, devis)
+      .then(() => {
+        commit(
+          "messagesModule/setSuccessMessage",
+          "Le devis a été sauvegardé avec succès, vous pouvez fermer la fenêtre.", { root: true }
+        );
+      })
+      .catch(e => {
+        commit(
+          `messagesModule/setErrorMessage`,
+          `${e.message} ${process.env.VUE_APP_ApiGesCom}`, { root: true }
+        );
+      });
   },
   addArticle(context, article: DocumentDetail) {
     context.commit('addArticle', article);

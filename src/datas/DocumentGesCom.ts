@@ -9,6 +9,8 @@ export class DocumentGesCom {
   public numeroBL = '';
   @JsonProperty('NumeroBC', String)
   public numeroBC = '';
+  @JsonProperty('NumeroFacture', String)
+  public numeroFacture = '';
   @JsonProperty('Date', Date)
   public date = new Date();
   @JsonProperty('DateCommande', Date)

@@ -80,7 +80,8 @@ export default class EditionDocument extends Vue {
       this.client == undefined ||
       this.articles == null ||
       this.articles == undefined ||
-      this.articles.length < 1 || !this.saveValid
+      this.articles.length < 1 ||
+      !this.saveValid
     );
   }
 
@@ -99,6 +100,7 @@ export default class EditionDocument extends Vue {
     if (this.$route.name == "Devis") doc.numeroDevis = this.refDoc;
     else if (this.$route.name == "Bon de commande") doc.numeroBC = this.refDoc;
     else if (this.$route.name == "Bon de livraison") doc.numeroBL = this.refDoc;
+    else if (this.$route.name == "Facture") doc.numeroFacture = this.refDoc;
 
     return doc;
   }

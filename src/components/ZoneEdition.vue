@@ -126,14 +126,14 @@
                     v-model="commentaire"
                   ></v-textarea>
                 </v-col>
-                <v-col v-if="this.$route.name == 'Bon de livraison'" cols="12" lg="6">
+                <v-col v-if="this.$route.name == 'Bon de livraison' || this.$route.name == 'Facture'" cols="12" lg="6">
                   <DatePickerPerso
                     :dateFromPicker.sync="dateCommande"
                     :styleDate="styleDateCommande"
                     :label="dateCommandeLabel"
                   />
                 </v-col>
-                <v-col v-if="this.$route.name == 'Bon de livraison'" cols="12" lg="6">
+                <v-col v-if="this.$route.name == 'Bon de livraison' || this.$route.name == 'Facture'" cols="12" lg="6">
                   <DatePickerPerso
                     :dateFromPicker.sync="dateLivraison"
                     :styleDate="styleDateCommande"
@@ -218,7 +218,7 @@ export default class ZoneEdition extends Vue {
   private cpLocalite = "";
 
   private creePar = "";
-  private dateCreation = "";
+  private dateCreation = this.formatDate(new Date().toISOString().substr(0, 10)) || "";
   private dateCommande = "";
   private dateLivraison = "";
   private demandePar = "";
@@ -318,6 +318,7 @@ export default class ZoneEdition extends Vue {
     this.$store.commit("clientModule/setClient", client);
     this.searchClientDialog = false;
     this.colorNumCli = "primary";
+    this.$store.commit("messagesModule/setMessageClientNotFound", "");
   }
 
   private refreshCustomersList() {
@@ -350,9 +351,11 @@ export default class ZoneEdition extends Vue {
       client.codePostal,
       client.localite
     );
+    this.colorCustomerFound = COLOR_OK;
   }
 
   private displayDocument(doc: DocumentGesCom) {
+    this.email = doc.email;
     this.creePar = doc.createur;
     if (doc.date)
       this.dateCreation =
