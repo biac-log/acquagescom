@@ -1,12 +1,20 @@
 import { JsonObject, JsonProperty } from 'json2typescript';
 import { DocumentDetail } from './DocumentDetail';
 
-@JsonObject('BonCommande')
-export class BonCommande {
-  @JsonProperty('NumeroBC ', String)
-  public numeroBC  = '';
+@JsonObject('DocumentGesCom')
+export class DocumentGesCom {
+  @JsonProperty('NumeroDevis', String)
+  public numeroDevis = '';
+  @JsonProperty('NumeroBL', String)
+  public numeroBL = '';
+  @JsonProperty('NumeroBC', String)
+  public numeroBC = '';
   @JsonProperty('Date', Date)
   public date = new Date();
+  @JsonProperty('DateCommande', Date)
+  public dateCommande = new Date();
+  @JsonProperty('DateLivraison', Date)
+  public dateLivraison = new Date();
   @JsonProperty('Createur ', String)
   public createur = '';
   @JsonProperty('NumeroClient', Number)
@@ -41,6 +49,4 @@ export class BonCommande {
   public demandePar = '';
   @JsonProperty('AcQuaDocsId ', String)
   public acQuaDocsId = '';
-  @JsonProperty('RefDevis', String)
-  public refDevis = '';
 }

@@ -9,7 +9,7 @@ export const state: ClientState = {
   client: undefined,
   customers: [],
   loading: false,
-  email:'',
+  email: '',
 };
 
 const namespaced = true;

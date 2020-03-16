@@ -4,8 +4,8 @@
       <v-spacer />
       <v-toolbar-title v-if="this.$route.name == 'Accueil'">{{this.$route.name}}</v-toolbar-title>
       <v-toolbar-title v-else-if="loading">Chargement...</v-toolbar-title>
-      <v-toolbar-title v-else-if="newDoc">Création {{this.$route.name}}</v-toolbar-title>
-      <v-toolbar-title v-else>Modification {{this.$route.name}} N° {{refDoc}}</v-toolbar-title>
+      <v-toolbar-title v-else-if="newDoc">Nouveau {{this.$route.name}}</v-toolbar-title>
+      <v-toolbar-title v-else>{{this.$route.name}} N° {{refDoc}}</v-toolbar-title>
       <v-spacer />
     </v-app-bar>
 

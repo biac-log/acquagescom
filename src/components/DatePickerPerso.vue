@@ -1,7 +1,7 @@
 <template>
   <v-menu
     v-model="fromDateMenu"
-    :close-on-content-click="false"
+    :close-on-content-click="true"
     :nudge-right="40"
     transition="scale-transition"
     offset-y
@@ -10,20 +10,20 @@
   >
     <template v-slot:activator="{ on }">
       <v-text-field
-        class="ml-2 mb-n5 mr-3 float-right min-width"
+        :class="styleDate"
         v-model="date"
-        label="Date"
+        :label="label"
         placeholder="jj/mm/aaaa"
         append-icon="mdi-calendar"
         v-on="on"
         :rules="dateRules"
-        solo
+        :solo="isSolo"
         counter="10"
         maxlength="10"
       ></v-text-field>
     </template>
     <v-date-picker
-      locale="fr-fr"
+      locale="fr-FR"
       v-model="dateFromDatePicker"
       no-title
       @input="fromDateMenu = false"
@@ -42,6 +42,12 @@ export default class DatePickerPerso extends Vue {
   private date!: string;
   @PropSync("colorDate")
   private color!: string;
+  @Prop()
+  private styleDate!: string;
+  @Prop()
+  private isSolo!: boolean;
+  @Prop()
+  private label!: string;
 
   private fromDateMenu = false;
   private dateFromDatePicker = new Date().toISOString().substr(0, 10);
@@ -107,6 +113,7 @@ export default class DatePickerPerso extends Vue {
     if (!date) return null;
 
     const [year, month, day] = date.split("-");
+    if (Number(year) <= 1) return "";
     return `${day}/${month}/${year}`;
   }
 }

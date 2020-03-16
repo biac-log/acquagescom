@@ -11,8 +11,9 @@ export const mutations: MutationTree<ClientState> = {
         state.client = client;
     },
     setEmail: (state, email: string) => {
+        if (state.client)
+            state.client.email = email;
         state.email = email;
-        localStorage.setItem('email', email);
     },
     clearClient: (state) => {
         state.client = undefined;
@@ -20,10 +21,9 @@ export const mutations: MutationTree<ClientState> = {
     saveCustomers(state, clients: Compte[]) {
         state.customers = clients;
     },
-    loadEmail(state) {
-        state.email = localStorage.getItem('email') || "";
-    },
     clearEmail(state) {
-        state.email = '';
+        if (state.client)
+            state.client.email = "";
+        state.email = "";
     },
 };

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { DocumentState } from './types';
 import { RootState } from '../types';
 import { DocumentDetail } from '@/datas/DocumentDetail';
-import { Devis } from '@/datas/Devis';
+import { DocumentGesCom } from '@/datas/DocumentGesCom';
 import router from '@/router';
 
 export const actions: ActionTree<DocumentState, RootState> = {
@@ -24,13 +24,13 @@ export const actions: ActionTree<DocumentState, RootState> = {
         );
       });
   },
-  sendDevis({commit}, devis: Devis) {
+  sendDevis({commit}, devis: DocumentGesCom) {
     axios
     .post(`${process.env.VUE_APP_ApiGesCom}/Devis`, devis)
     .then(() => {
       commit(
         "messagesModule/setSuccessMessage",
-        "Le devis a été sauvegardé avec succès, vous pouvez fermer la fenêtre."
+        "Le devis a été sauvegardé avec succès, vous pouvez fermer la fenêtre.", {root:true}
       );
     })
     .catch(e => {

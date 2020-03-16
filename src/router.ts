@@ -61,6 +61,7 @@ function filldocRef(doc: any) {
     let ref = "";
     if (doc.numeroDevis) ref = doc.numeroDevis;
     if (doc.numeroBC) ref = doc.numeroBC;
+    if (doc.numeroBL) ref = doc.numeroBL;
     store.commit('documentModule/setRefDoc', ref);
 }
 
@@ -68,24 +69,32 @@ export default new Router({
     mode: "history",
     routes: [
         {
+            path: "*",
+            name: "Accueil",
+            component: home
+        },
+        {
             path: "/Devis/:docId",
             name: "Devis",
             component: EditionDocument,
             props: true,
-            beforeEnter: getDocument,
+            beforeEnter: getDocument
         },
         {
             path: "/BonCommande/:docId",
             name: "Bon de commande",
             component: EditionDocument,
             props: true,
-            beforeEnter: getDocument,
+            beforeEnter: getDocument
         },
         {
-            path: "*",
-            name: "Accueil",
-            component: home
+            path: "/BonLivraison/:docId",
+            name: "Bon de livraison",
+            component: EditionDocument,
+            props: true,
+            beforeEnter: getDocument
         }
+
     ],
 });
 

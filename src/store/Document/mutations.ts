@@ -1,7 +1,7 @@
 import { MutationTree } from 'vuex';
 import { DocumentState } from './types';
 import { Compte } from '@/datas/Compte';
-import { Devis } from '@/datas/Devis';
+import { DocumentGesCom } from '@/datas/DocumentGesCom';
 import { DocumentDetail } from '@/datas/DocumentDetail';
 import { state } from '.';
 
@@ -9,7 +9,7 @@ export const mutations: MutationTree<DocumentState> = {
     setLoading(state, isLoading: boolean) {
         state.loading = isLoading;
     },
-    setDocument: (state, doc: Devis) => {
+    setDocument: (state, doc: DocumentGesCom) => {
         state.document = doc;
     },
     setArticles(state, list: DocumentDetail[]) {

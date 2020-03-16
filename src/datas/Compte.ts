@@ -18,4 +18,5 @@ export class Compte {
   public localite = '';
   @JsonProperty('CodePays', String)
   public codePays = '';
+  public email = '';
 }

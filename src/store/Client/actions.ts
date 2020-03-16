@@ -4,11 +4,9 @@ import { ClientState } from './types';
 import { RootState } from '../types';
 import { Compte } from '@/datas/Compte';
 import { JsonConvert, ValueCheckingMode } from 'json2typescript';
-import { Email } from '@/datas/Email';
-
 
 export const actions: ActionTree<ClientState, RootState> = {
-  searchCustomer({ commit }, numeroClient) {
+  searchCustomer({ commit, dispatch }, numeroClient) {
     commit('setLoading', true);
     axios
       .get<Compte>(
@@ -23,6 +21,7 @@ export const actions: ActionTree<ClientState, RootState> = {
             Compte
           );
           commit("setClient", compte);
+          dispatch("getEmail", compte.numero);
           commit("messagesModule/setMessageClientNotFound", "", { root: true });
         } else {
           commit("clearClient");
@@ -43,7 +42,7 @@ export const actions: ActionTree<ClientState, RootState> = {
   getEmail({ commit }, numeroClient) {
     commit('clearEmail');
     axios
-      .get<Email>(
+      .get<any>(
         `${process.env.VUE_APP_ApiAcQua}/Email/GetEmailByCompte?typeCompte=Client&numeroCompte=${numeroClient}&isLocked=false`
       )
       .then(response => {
