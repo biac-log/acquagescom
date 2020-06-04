@@ -174,19 +174,9 @@ export default class ZoneEdition extends Vue {
   @PropSync("totalTvac")
   private prixTotalTVAC!: number;
 
-  // private mounted() {
-  //   const table = document.querySelector(".v-data-table tbody");
-  //   const that = this;
-  //   Sortable.create(table as HTMLElement, {
-  //     onEnd({ newIndex, oldIndex }) {
-  //       const realOldIndex = oldIndex != undefined? oldIndex : -1;
-  //       const realNewIndex = newIndex != undefined? newIndex : -1;
-  //       const rowSelected = that.articles.splice(realOldIndex, 1)[0];
-  //       that.articles.splice(realNewIndex, 0, rowSelected);
-  //       that.$store.commit(`${MODULE_NAME}/saveArticles`, that.articles);
-  //     }
-  //   });
-  // }
+  private mounted() {
+    this.$emit("calculPrix");
+  }
 
   private editItem(item: DocumentDetail) {
     this.formTitle = "Modification article";
@@ -233,7 +223,10 @@ export default class ZoneEdition extends Vue {
   }
 
   private isFirstItem(ligneArticle: DocumentDetail): boolean {
-    return this.articles.findIndex(a => a.description == ligneArticle.description) == 0;
+    return (
+      this.articles.findIndex(a => a.description == ligneArticle.description) ==
+      0
+    );
   }
 
   private isLastItem(ligneArticle: DocumentDetail): boolean {
