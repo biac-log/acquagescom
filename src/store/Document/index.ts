@@ -9,6 +9,7 @@ export const state: DocumentState = {
   document: undefined,
   articles: [],
   loading: false,
+  initialLoading: false,
   isNewDoc: true,
   refDoc:'',
   guidDoc: '',

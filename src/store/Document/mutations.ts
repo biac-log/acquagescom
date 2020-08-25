@@ -9,6 +9,9 @@ export const mutations: MutationTree<DocumentState> = {
     setLoading(state, isLoading: boolean) {
         state.loading = isLoading;
     },
+    setInitialLoading(state, isInitialLoading: boolean) {
+        state.initialLoading = isInitialLoading;
+    },
     setDocument: (state, doc: DocumentGesCom) => {
         state.document = doc;
     },

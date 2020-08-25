@@ -10,6 +10,7 @@
     <v-row>
       <v-spacer></v-spacer>
       <v-btn
+        :loading="loading"
         color="green lighten-1"
         @click="save"
         class="mb-5 white--text"
@@ -43,6 +44,8 @@ export default class EditionDocument extends Vue {
   public totalTva = 0;
   public saveValid = true;
 
+  @Getter('documentModule/loading')
+  private loading!: boolean;
   @Getter(`documentModule/getGuidDoc`)
   private guidDoc!: string;
   @Getter(`documentModule/getArticles`)

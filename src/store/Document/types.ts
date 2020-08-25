@@ -3,6 +3,7 @@ import { DocumentDetail } from '@/datas/DocumentDetail';
 
 export interface DocumentState {
     loading: boolean;
+    initialLoading: boolean;
     document?: DocumentGesCom;
     articles: DocumentDetail[];
     isNewDoc: boolean;
