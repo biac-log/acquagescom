@@ -78,6 +78,7 @@ export default class App extends Vue {
   }
 
   private created() {
+    this.$store.dispatch('clientModule/refreshCustomersList');
     this.$store.commit(
       "messagesModule/setMessageClientNotFound",
       "Veuillez entrer un numéro de client"
