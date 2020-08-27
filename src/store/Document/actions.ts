@@ -26,14 +26,23 @@ export const actions: ActionTree<DocumentState, RootState> = {
         commit('setLoading', false);
       });
   },
-  sendDevis({ commit }, devis: DocumentGesCom) {
+  sendDevis({ commit }, document: DocumentGesCom) {
     commit('setLoading', true)
+    const splitPath = router.currentRoute.path.split('/');
+    const typeEnvoi = splitPath[1];
     axios
-      .post(`${process.env.VUE_APP_ApiGesCom}/Devis`, devis)
+      .post(`${process.env.VUE_APP_ApiGesCom}/${typeEnvoi}/Create`, document)
       .then(() => {
+        if(router.currentRoute.name == "Facture")
+        {
+          commit(
+            "messagesModule/setSuccessMessage",
+            `La ${router.currentRoute.name} a été sauvegardée avec succès, vous pouvez fermer la fenêtre`, { root: true }
+          );
+        }
         commit(
           "messagesModule/setSuccessMessage",
-          "Le devis a été sauvegardé avec succès, vous pouvez fermer la fenêtre.", { root: true }
+          `Le ${router.currentRoute.name} a été sauvegardé avec succès, vous pouvez fermer la fenêtre`, { root: true }
         );
       })
       .catch(e => {
