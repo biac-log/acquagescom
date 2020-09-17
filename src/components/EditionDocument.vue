@@ -45,7 +45,7 @@ export default class EditionDocument extends Vue {
   public totalTva = 0;
   public saveValid = true;
 
-  @Getter('documentModule/loading')
+  @Getter("documentModule/loading")
   private loading!: boolean;
   @Getter(`documentModule/getGuidDoc`)
   private guidDoc!: string;
@@ -59,8 +59,6 @@ export default class EditionDocument extends Vue {
   private refDoc!: string;
   @Getter("clientModule/getClient")
   private client!: Compte;
-  @Getter("documentModule/loading")
-  private loading!: boolean;
 
   setPrixTotal(articles: DocumentDetail[]) {
     articles.forEach(a => {
