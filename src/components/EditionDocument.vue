@@ -10,6 +10,7 @@
     <v-row>
       <v-spacer></v-spacer>
       <v-btn
+        :loading="loading"
         color="green lighten-1"
         @click="save"
         class="mb-5 white--text"
@@ -33,6 +34,7 @@ import { DocumentDetail } from "@/datas/DocumentDetail";
 import { DocumentGesCom } from "@/datas/DocumentGesCom";
 import { Compte } from "@/datas/Compte";
 import { documentModule } from "../store/Document";
+
 import axios from "axios";
 const TVA = 17;
 
@@ -55,6 +57,8 @@ export default class EditionDocument extends Vue {
   private refDoc!: string;
   @Getter("clientModule/getClient")
   private client!: Compte;
+  @Getter("documentModule/loading")
+  private loading!: boolean;
 
   setPrixTotal(articles: DocumentDetail[]) {
     articles.forEach(a => {
@@ -122,7 +126,14 @@ export default class EditionDocument extends Vue {
         }`,
         doc: document
       });
-    } else this.$store.dispatch("documentModule/sendDevis", document);
+    } else {
+      this.$store.dispatch("documentModule/createDocument", {
+        url: `${process.env.VUE_APP_ApiGesCom}/${
+          this.$route.path.split("/")[1]
+        }/Create`,
+        doc: document
+      });
+    }
   }
 }
 </script>
