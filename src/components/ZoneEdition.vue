@@ -20,6 +20,7 @@
                 maxlength="9"
                 @keyup="triggerCheck"
                 :loading="loading"
+                @blur="triggerCheckPartial"
               ></v-text-field>
             </v-card-title>
             <v-container>
@@ -285,6 +286,10 @@ export default class ZoneEdition extends Vue {
 
   private triggerCheck() {
     if (this.numeroClient.length == 9) this.searchClient();
+    else this.clearClient();
+  }
+  private triggerCheckPartial() {
+    if (this.numeroClient.length < 9) this.searchClient();
     else this.clearClient();
   }
 

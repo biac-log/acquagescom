@@ -45,6 +45,8 @@ export default class EditionDocument extends Vue {
   public totalTva = 0;
   public saveValid = true;
 
+  @Getter('documentModule/loading')
+  private loading!: boolean;
   @Getter(`documentModule/getGuidDoc`)
   private guidDoc!: string;
   @Getter(`documentModule/getArticles`)

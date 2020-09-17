@@ -31,9 +31,15 @@ export const actions: ActionTree<DocumentState, RootState> = {
     axios
       .post(datas.url, datas.doc)
       .then(() => {
+        if (router.currentRoute.name == "Facture") {
+          commit(
+            "messagesModule/setSuccessMessage",
+            `La ${router.currentRoute.name} a été sauvegardée avec succès, vous pouvez fermer la fenêtre`, { root: true }
+          );
+        }
         commit(
           "messagesModule/setSuccessMessage",
-          "Le devis a été sauvegardé avec succès, vous pouvez fermer la fenêtre.", { root: true }
+          `Le ${router.currentRoute.name} a été sauvegardé avec succès, vous pouvez fermer la fenêtre`, { root: true }
         );
       })
       .catch(e => {

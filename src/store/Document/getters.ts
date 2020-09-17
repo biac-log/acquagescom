@@ -8,6 +8,9 @@ export const getters: GetterTree<DocumentState, RootState> = {
     loading(state): boolean {
         return state.loading;
     },
+    initialLoading(state): boolean{
+        return state.initialLoading;
+    },
     getDocument(state) {
         return state.document;
     },

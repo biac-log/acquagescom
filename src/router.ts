@@ -14,7 +14,7 @@ const getDocument: NavigationGuard = (to, from, next) => {
         next();
     }
     else {
-        store.commit('documentModule/setLoading', true);
+        store.commit('documentModule/setInitialLoading', true);
         const refDoc = to.params.docId.replace("%2F", "/");
         axios
             .get<any>(
@@ -44,7 +44,7 @@ const getDocument: NavigationGuard = (to, from, next) => {
                     );
             })
             .finally(() => {
-                store.commit('documentModule/setLoading', false);
+                store.commit('documentModule/setInitialLoading', false);
             });
     }
 }
