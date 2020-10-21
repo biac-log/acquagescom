@@ -5,24 +5,53 @@
       :headers="headers"
       @click:row="editItem"
       :items="articles"
-      :footer-props="{ 'items-per-page-options': [10, 25, 50],
-                      	 'items-per-page-text': 'Articles par page'}"
+      :footer-props="{
+        'items-per-page-options': [10, 25, 50],
+        'items-per-page-text': 'Articles par page'
+      }"
     >
       <template v-slot:item.upDown="{ item }">
-        <v-icon :disabled="isFirstItem(item)" @click.stop="moveUp(item)">mdi-chevron-up</v-icon>
-        <v-icon :disabled="isLastItem(item)" @click.stop="moveDown(item)">mdi-chevron-down</v-icon>
+        <v-icon :disabled="isFirstItem(item)" @click.stop="moveUp(item)"
+          >mdi-chevron-up</v-icon
+        >
+        <v-icon :disabled="isLastItem(item)" @click.stop="moveDown(item)"
+          >mdi-chevron-down</v-icon
+        >
       </template>
       <template v-slot:item.prixUnitaire="{ item }">
-        <span>{{item.prixUnitaire.toLocaleString("fr-FR", { maximumFractionDigits: 2, minimumFractionDigits: 2 })}} €</span>
+        <span
+          >{{
+            item.prixUnitaire.toLocaleString("fr-FR", {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2
+            })
+          }}
+          €</span
+        >
       </template>
       <template v-slot:item.prixTotal="{ item }">
-        <span>{{item.prixTotal.toLocaleString("fr-FR", { maximumFractionDigits: 2, minimumFractionDigits: 2 })}} €</span>
+        <span
+          >{{
+            item.prixTotal.toLocaleString("fr-FR", {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2
+            })
+          }}
+          €</span
+        >
       </template>
       <template v-slot:top>
         <v-toolbar flat color="white">
-          <v-dialog v-model="dialog" max-width="800px" min-width="400px" @keydown.esc="close">
+          <v-dialog
+            v-model="dialog"
+            max-width="800px"
+            min-width="400px"
+            @keydown.esc="close"
+          >
             <template v-slot:activator="{ on }">
-              <v-btn color="primary" dark class="mb-2 ml-n4" v-on="on">Nouvel article</v-btn>
+              <v-btn color="primary" dark class="mb-2 ml-n4" v-on="on"
+                >Nouvel article</v-btn
+              >
             </template>
             <v-card>
               <v-card-title>
@@ -32,7 +61,21 @@
               <v-card-text>
                 <v-container @keypress.enter="save">
                   <v-row>
-                    <v-col cols="12" sm="6" md="2">
+                    <v-col cols="12" sm="6" md="4">
+                      <v-select
+                        auto-select-first
+                        :items="editMode"
+                        v-model="editedItem.typeDetail"
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="2"
+                      v-if="editedItem.typeDetail != 'Texte'"
+                    >
                       <v-text-field
                         ref="quantiteField"
                         v-model.number="editedItem.quantite"
@@ -41,14 +84,34 @@
                         type="number"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6" md="8">
-                      <v-text-field v-model="editedItem.description" label="Description"></v-text-field>
+                    <v-col cols="12" sm="6" md="7">
+                      <v-text-field
+                        v-model="editedItem.description"
+                        label="Description"
+                      ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6" md="2">
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="2"
+                      v-if="editedItem.typeDetail != 'Texte'"
+                    >
                       <v-text-field
                         v-model.number="editedItem.prixUnitaire"
                         type="number"
                         label="Prix/unité"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="1"
+                      v-if="editedItem.typeDetail != 'Texte'"
+                    >
+                      <v-text-field
+                        v-model.number="editedItem.tauxTva"
+                        type="number"
+                        label="TVA"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -57,12 +120,31 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="deleteItem(editedItem)">Supprimer</v-btn>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="deleteItem(editedItem)"
+                  >Supprimer</v-btn
+                >
                 <v-btn color="blue darken-1" text @click="close">Annuler</v-btn>
-                <v-btn color="blue darken-1" text @click="save">Enregistrer</v-btn>
+                <v-btn color="blue darken-1" text @click="save"
+                  >Enregistrer</v-btn
+                >
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-spacer></v-spacer>
+
+          <v-text-field
+            v-model.number="tva"
+            type="number"
+            label="Base TVA"
+            dense
+            class="mb-0 mr-0 mt-4 shrink"
+          ></v-text-field>
+          <v-btn color="primary" dark class="ma-2" @click="recalculTva"
+            >Appliquer</v-btn
+          >
         </v-toolbar>
       </template>
       <template v-slot:item.action="{ item }">
@@ -70,27 +152,46 @@
         <v-icon small @click.stop="deleteItem(item)">mdi-delete</v-icon>
       </template>
     </v-data-table>
+
     <v-row class="mr-0 my-1">
       <v-spacer></v-spacer>
-      <v-col cols="12" lg="2">
+      <v-col cols="12" lg="3">
         <span class="mr-1">Total HTVA :</span>
-        <span
-          class="float-right"
-        >{{prixTotalHTVA.toLocaleString("fr-FR", { maximumFractionDigits: 2, minimumFractionDigits: 2 })}} €</span>
+        <span class="float-right"
+          >{{
+            prixTotalHTVA.toLocaleString("fr-FR", {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2
+            })
+          }}
+          €</span
+        >
       </v-col>
       <v-divider vertical />
-      <v-col cols="12" lg="2">
+      <v-col cols="12" lg="3">
         <span class="mr-1">Total TVA :</span>
-        <span
-          class="float-right"
-        >{{totalTVA.toLocaleString("fr-FR", { maximumFractionDigits: 2, minimumFractionDigits: 2 })}} €</span>
+        <span class="float-right"
+          >{{
+            totalTVA.toLocaleString("fr-FR", {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2
+            })
+          }}
+          €</span
+        >
       </v-col>
       <v-divider vertical />
-      <v-col cols="12" lg="2" class="font-weight-bold">
+      <v-col cols="12" lg="3" class="font-weight-bold">
         <span class="mr-1">Prix total TTC :</span>
-        <span
-          class="float-right"
-        >{{prixTotalTVAC.toLocaleString("fr-FR", { maximumFractionDigits: 2, minimumFractionDigits: 2 })}} €</span>
+        <span class="float-right"
+          >{{
+            prixTotalTVAC.toLocaleString("fr-FR", {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2
+            })
+          }}
+          €</span
+        >
       </v-col>
     </v-row>
   </v-container>
@@ -101,7 +202,6 @@ import { Component, Vue, Prop, PropSync } from "vue-property-decorator";
 import { Getter } from "vuex-class";
 import { DocumentDetail } from "@/datas/DocumentDetail";
 import Sortable from "sortablejs";
-const TVA = 17;
 
 @Component({})
 export default class ZoneEdition extends Vue {
@@ -110,6 +210,7 @@ export default class ZoneEdition extends Vue {
 
   private dialog = false;
   private editedIndex = -1;
+  private tva = 17;
 
   private headers = [
     {
@@ -150,23 +251,28 @@ export default class ZoneEdition extends Vue {
     }
   ];
 
+  private editMode = ["Article", "Option", "Texte"];
+
   private formTitle = "Nouvel article";
   private editedItem = {
+    typeDetail: "Article",
     numeroLigne: 0,
     quantite: 1,
     description: "",
     prixUnitaire: 0,
     prixTotal: 0,
-    tauxTva: 0
+    tauxTva: this.tva
   };
   private defaultItem = {
+    typeDetail: "Article",
     numeroLigne: 0,
     quantite: 1,
     description: "",
     prixUnitaire: 0,
     prixTotal: 0,
-    tauxTva: 0
+    tauxTva: this.tva
   };
+
   @PropSync("totalHtva")
   private prixTotalHTVA!: number;
   @PropSync("TvaTot")
@@ -175,6 +281,14 @@ export default class ZoneEdition extends Vue {
   private prixTotalTVAC!: number;
 
   private mounted() {
+    this.$emit("calculPrix");
+  }
+
+  private recalculTva() {
+    this.articles.forEach(element => {
+      element.tauxTva = this.tva;
+    });
+    this.$store.dispatch(`documentModule/saveArticles`, this.articles);
     this.$emit("calculPrix");
   }
 
@@ -206,9 +320,14 @@ export default class ZoneEdition extends Vue {
   }
 
   private save() {
+    if (this.editedItem.typeDetail == "Texte") {
+      this.editedItem.quantite = 0;
+      this.editedItem.prixUnitaire = 0;
+      this.editedItem.tauxTva = 0;
+    }
+
     this.editedItem.prixTotal =
       this.editedItem.prixUnitaire * this.editedItem.quantite;
-    this.editedItem.tauxTva = TVA;
     if (this.editedIndex > -1) {
       Object.assign(this.articles[this.editedIndex], this.editedItem);
       this.close();

@@ -5,6 +5,7 @@ import { RootState } from '../types';
 import { DocumentDetail } from '@/datas/DocumentDetail';
 import { DocumentGesCom } from '@/datas/DocumentGesCom';
 import router from '@/router';
+import { stringifyConfiguration } from 'tslint/lib/configuration';
 
 export const actions: ActionTree<DocumentState, RootState> = {
   updateDocument({ commit }, datas: any) {
@@ -17,10 +18,16 @@ export const actions: ActionTree<DocumentState, RootState> = {
           `Le ${router.currentRoute.name} a été sauvegardé avec succès, vous pouvez fermer la fenêtre.`, { root: true }
         );
       })
-      .catch(e => {
-        commit(
-          `messagesModule/setErrorMessage`,
-          `${e.message} ${process.env.VUE_APP_ApiGesCom}`, { root: true }
+      .catch(error => {
+        let message = error.message;
+        if (error.response) {
+          if (error.response?.data?.Message)
+            return error.response.data.Message;
+          else if (typeof error.response.data === 'string' || error.response.data instanceof String)
+            return `Erreur, ${error.response.status} ${error.response.data}`;
+          else return `Erreur, ${error.response.status} ${error.response.statusText}`;
+        }
+        commit(`messagesModule/setErrorMessage`, message, { root: true }
         );
       }).finally(() => {
         commit('setLoading', false);
@@ -42,10 +49,16 @@ export const actions: ActionTree<DocumentState, RootState> = {
           `Le ${router.currentRoute.name} a été sauvegardé avec succès, vous pouvez fermer la fenêtre`, { root: true }
         );
       })
-      .catch(e => {
-        commit(
-          `messagesModule/setErrorMessage`,
-          `${e.message} ${process.env.VUE_APP_ApiGesCom}`, { root: true }
+      .catch(error => {
+        let message = error.message;
+        if (error.response) {
+          if (error.response?.data?.Message)
+            return error.response.data.Message;
+          else if (typeof error.response.data === 'string' || error.response.data instanceof String)
+            return `Erreur, ${error.response.status} ${error.response.data}`;
+          else return `Erreur, ${error.response.status} ${error.response.statusText}`;
+        }
+        commit(`messagesModule/setErrorMessage`, message, { root: true }
         );
       }).finally(() => {
         commit('setLoading', false);
@@ -61,4 +74,6 @@ export const actions: ActionTree<DocumentState, RootState> = {
   saveArticles(context, articles: DocumentDetail[]) {
     context.commit('saveArticles', articles);
   },
+
+
 };

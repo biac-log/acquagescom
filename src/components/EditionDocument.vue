@@ -72,9 +72,11 @@ export default class EditionDocument extends Vue {
     this.prixTotalTTC = 0;
     this.totalTva = 0;
     this.articles.forEach(e => {
-      this.prixTotalHtva += e.prixTotal;
-      this.totalTva += e.prixTotal * (TVA / 100);
-      this.prixTotalTTC += e.prixTotal + (e.prixTotal * TVA) / 100;
+      if (e.typeDetail == "Article") {
+        this.prixTotalHtva += e.prixTotal;
+        this.totalTva += e.prixTotal * (e.tauxTva / 100);
+        this.prixTotalTTC += e.prixTotal + (e.prixTotal * e.tauxTva) / 100;
+      }
     });
   }
 

@@ -2,6 +2,8 @@ import { JsonObject, JsonProperty } from 'json2typescript';
 
 @JsonObject('DocumentDetail')
 export class DocumentDetail {
+  @JsonProperty('Mode', String)
+  public typeDetail = 'Article';
   @JsonProperty('Quantite', Number)
   public quantite = 0;
   @JsonProperty('Description', String)
