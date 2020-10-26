@@ -18,27 +18,17 @@
           >mdi-chevron-down</v-icon
         >
       </template>
+      <template v-slot:item.quantite="{ item }">
+        <span>{{ numberToString(item.quantite, item.typeDetail) }}</span>
+      </template>
+      <template v-slot:item.tauxTva="{ item }">
+        <span>{{ numberToString(item.tauxTva, item.typeDetail) }}</span>
+      </template>
       <template v-slot:item.prixUnitaire="{ item }">
-        <span
-          >{{
-            item.prixUnitaire.toLocaleString("fr-FR", {
-              maximumFractionDigits: 2,
-              minimumFractionDigits: 2
-            })
-          }}
-          €</span
-        >
+        <span>{{ numberToEuro(item.prixUnitaire, item.typeDetail) }}</span>
       </template>
       <template v-slot:item.prixTotal="{ item }">
-        <span
-          >{{
-            item.prixTotal.toLocaleString("fr-FR", {
-              maximumFractionDigits: 2,
-              minimumFractionDigits: 2
-            })
-          }}
-          €</span
-        >
+        <span>{{ numberToEuro(item.prixTotal, item.typeDetail) }}</span>
       </template>
       <template v-slot:top>
         <v-toolbar flat color="white">
@@ -227,6 +217,7 @@ export default class ZoneEdition extends Vue {
       sortable: false,
       align: "right"
     },
+    { text: "Type", value: "typeDetail", sortable: false },
     { text: "Description", value: "description", sortable: false },
     {
       text: "Prix / unité",
@@ -239,6 +230,13 @@ export default class ZoneEdition extends Vue {
       text: "Prix total",
       value: "prixTotal",
       width: 150,
+      sortable: false,
+      align: "right"
+    },
+    {
+      text: "Taux TVA",
+      value: "tauxTva",
+      width: 90,
       sortable: false,
       align: "right"
     },
@@ -373,6 +371,24 @@ export default class ZoneEdition extends Vue {
     const newIndex = oldIndex + 1;
     const rowSelected = this.articles.splice(oldIndex, 1)[0];
     this.articles.splice(newIndex, 0, rowSelected);
+  }
+
+  private numberToEuro(number: number, typeArticle: string) {
+    if (typeArticle == "Texte") return "";
+    else
+      return (
+        Intl.NumberFormat("fr-FR", { minimumFractionDigits: 2 }).format(
+          number
+        ) + " €"
+      );
+  }
+
+  private numberToString(number: number, typeArticle: string) {
+    if (typeArticle == "Texte") return "";
+    else
+      return Intl.NumberFormat("fr-FR", { minimumFractionDigits: 0 }).format(
+        number
+      );
   }
 }
 </script>

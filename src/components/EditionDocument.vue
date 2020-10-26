@@ -1,6 +1,9 @@
 <template>
   <v-container>
-    <ZoneEdition :isSaveValid.sync="saveValid" ref="zoneEditionVue"></ZoneEdition>
+    <ZoneEdition
+      :isSaveValid.sync="saveValid"
+      ref="zoneEditionVue"
+    ></ZoneEdition>
     <GrilleArticles
       :totalHtva.sync="prixTotalHtva"
       :totalTvac.sync="prixTotalTTC"
@@ -15,12 +18,13 @@
         @click="save"
         class="mb-5 white--text"
         :disabled="isSaveActive()"
-      >Sauvegarder</v-btn>
+        >Sauvegarder</v-btn
+      >
       <v-spacer></v-spacer>
     </v-row>
     <v-footer color="white" absolute class="overline">
       <v-spacer></v-spacer>
-      {{guidDoc}}
+      {{ guidDoc }}
     </v-footer>
   </v-container>
 </template>
@@ -82,8 +86,6 @@ export default class EditionDocument extends Vue {
 
   private isSaveActive(): boolean {
     return (
-      this.client == null ||
-      this.client == undefined ||
       this.articles == null ||
       this.articles == undefined ||
       this.articles.length < 1 ||
